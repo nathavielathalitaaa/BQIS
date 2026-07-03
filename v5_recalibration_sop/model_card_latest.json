@@ -1,0 +1,34 @@
+{
+  "generated_at": "2026-07-03T17:14:21.891146",
+  "data_source": "../data/bqis_biscuit_quality_dataset.csv",
+  "quality_gate": {
+    "duplicates_removed": 0,
+    "flagged_missing_pct": 0.0,
+    "flagged_outlier_pct": 13.1
+  },
+  "classifier": {
+    "cv_accuracy_mean": 0.9638,
+    "cv_accuracy_std": 0.0025,
+    "test_accuracy": 0.98,
+    "test_f1": 0.971,
+    "n_train": 800,
+    "n_test": 200
+  },
+  "clustering": {
+    "selected_features": [
+      "acid_value",
+      "cadmium",
+      "lead",
+      "yeast_mold",
+      "peroxide"
+    ],
+    "best_k": 5,
+    "silhouette": 0.321,
+    "ari": 0.398,
+    "nmi": 0.448
+  },
+  "sign_off_status": "PENDING_HUMAN_REVIEW",
+  "reviewer": null,
+  "review_date": null,
+  "approved_for_production": false
+}

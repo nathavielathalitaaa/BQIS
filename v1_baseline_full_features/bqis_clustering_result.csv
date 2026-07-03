@@ -1,0 +1,349 @@
+Sample_ID,Batch_Code,Product_Name,Failure_Category_Original,KMeans_Cluster,DBSCAN_Cluster
+SPL-2026-0996,B-250102-6,Cracker Filled,Heavy_Metal,1,-1
+SPL-2026-0294,B-250103-6,Sandwich Biscuit,Physicochemical,2,0
+SPL-2026-0550,B-250103-2,Cracker Filled,Microbiological,5,-1
+SPL-2026-0175,B-250105-2,Cracker Filled,Physicochemical,3,0
+SPL-2026-0807,B-250105-3,Cracker Plain,Physicochemical,2,0
+SPL-2026-0682,B-250107-1,Butter Biscuit,Physicochemical,2,-1
+SPL-2026-0038,B-250108-1,Cookies Choco Chip,Physicochemical,2,0
+SPL-2026-0652,B-250110-8,Cracker Filled,Heavy_Metal,1,0
+SPL-2026-0594,B-250111-1,Wafer Vanilla,Physicochemical,5,-1
+SPL-2026-0944,B-250117-2,Cracker Plain,Stability,1,0
+SPL-2026-0683,B-250119-4,Wafer Vanilla,Physicochemical,5,-1
+SPL-2026-0452,B-250123-8,Wafer Vanilla,Microbiological,4,-1
+SPL-2026-0871,B-250124-3,Cracker Plain,Stability,1,-1
+SPL-2026-0806,B-250125-8,Cookies Choco Chip,Heavy_Metal,5,-1
+SPL-2026-0781,B-250126-3,Wafer Vanilla,Heavy_Metal,5,-1
+SPL-2026-0518,B-250127-5,Butter Biscuit,Stability,1,0
+SPL-2026-0464,B-250128-5,Sandwich Biscuit,Physicochemical,5,0
+SPL-2026-0453,B-250128-1,Cracker Plain,Stability,1,0
+SPL-2026-0653,B-250129-8,Marie Biscuit,Microbiological,5,0
+SPL-2026-0979,B-250131-3,Sandwich Biscuit,Physicochemical,1,0
+SPL-2026-0801,B-250131-7,Butter Biscuit,Heavy_Metal,1,-1
+SPL-2026-0889,B-250203-2,Butter Biscuit,Physicochemical,5,0
+SPL-2026-0362,B-250206-7,Wafer Vanilla,Stability,1,0
+SPL-2026-0769,B-250206-4,Butter Biscuit,Physicochemical,5,0
+SPL-2026-0953,B-250208-8,Cracker Filled,Physicochemical,1,-1
+SPL-2026-0253,B-250209-2,Marie Biscuit,Physicochemical,3,0
+SPL-2026-0571,B-250212-7,Wafer Vanilla,Physicochemical,1,0
+SPL-2026-0096,B-250213-7,Sandwich Biscuit,Heavy_Metal,1,-1
+SPL-2026-0851,B-250214-2,Wafer Vanilla,Heavy_Metal,1,0
+SPL-2026-0122,B-250215-8,Cracker Filled,Heavy_Metal,1,-1
+SPL-2026-0721,B-250217-6,Butter Biscuit,Microbiological,4,-1
+SPL-2026-0931,B-250218-2,Cracker Plain,Physicochemical,3,-1
+SPL-2026-0531,B-250218-8,Cracker Filled,Physicochemical,2,0
+SPL-2026-0633,B-250219-8,Cracker Plain,Physicochemical,3,0
+SPL-2026-0690,B-250220-8,Cookies Choco Chip,Physicochemical,2,0
+SPL-2026-0227,B-250227-8,Cookies Choco Chip,Physicochemical,2,0
+SPL-2026-0816,B-250301-1,Cookies Choco Chip,Stability,2,-1
+SPL-2026-0538,B-250301-4,Butter Biscuit,Physicochemical,3,-1
+SPL-2026-0484,B-250302-3,Cookies Choco Chip,Physicochemical,2,0
+SPL-2026-0321,B-250303-1,Sandwich Biscuit,Microbiological,5,-1
+SPL-2026-0579,B-250303-8,Wafer Vanilla,Physicochemical,2,-1
+SPL-2026-0020,B-250304-4,Cracker Plain,Physicochemical,5,0
+SPL-2026-0343,B-250306-5,Cracker Filled,Heavy_Metal,1,1
+SPL-2026-0157,B-250306-4,Butter Biscuit,Physicochemical,5,-1
+SPL-2026-0238,B-250308-3,Cracker Plain,Physicochemical,5,0
+SPL-2026-0005,B-250311-7,Cracker Plain,Physicochemical,3,-1
+SPL-2026-0776,B-250312-3,Wafer Vanilla,Physicochemical,1,0
+SPL-2026-0090,B-250318-1,Cookies Choco Chip,Heavy_Metal,1,0
+SPL-2026-0963,B-250318-8,Cookies Choco Chip,Physicochemical,5,0
+SPL-2026-0063,B-250319-2,Sandwich Biscuit,Heavy_Metal,1,1
+SPL-2026-0607,B-250321-5,Sandwich Biscuit,Physicochemical,2,0
+SPL-2026-0970,B-250324-6,Butter Biscuit,Physicochemical,5,-1
+SPL-2026-0229,B-250325-3,Cracker Plain,Stability,1,0
+SPL-2026-0947,B-250326-5,Wafer Vanilla,Physicochemical,2,0
+SPL-2026-0778,B-250329-8,Butter Biscuit,Stability,1,0
+SPL-2026-0487,B-250329-2,Sandwich Biscuit,Heavy_Metal,1,-1
+SPL-2026-0936,B-250330-2,Wafer Vanilla,Heavy_Metal,3,1
+SPL-2026-0596,B-250331-2,Cookies Choco Chip,Stability,1,-1
+SPL-2026-0174,B-250406-7,Cookies Choco Chip,Physicochemical,3,-1
+SPL-2026-0702,B-250407-7,Cracker Filled,Physicochemical,2,0
+SPL-2026-0883,B-250407-5,Cracker Plain,Physicochemical,3,-1
+SPL-2026-0432,B-250410-5,Cookies Choco Chip,Physicochemical,2,0
+SPL-2026-0663,B-250411-2,Butter Biscuit,Heavy_Metal,2,1
+SPL-2026-0960,B-250412-4,Sandwich Biscuit,Heavy_Metal,2,-1
+SPL-2026-0326,B-250412-7,Marie Biscuit,Physicochemical,5,0
+SPL-2026-0523,B-250414-2,Marie Biscuit,Physicochemical,2,0
+SPL-2026-0787,B-250418-3,Butter Biscuit,Physicochemical,3,-1
+SPL-2026-0085,B-250419-2,Cracker Filled,Physicochemical,5,0
+SPL-2026-0796,B-250420-8,Sandwich Biscuit,Physicochemical,1,0
+SPL-2026-0745,B-250424-2,Cookies Choco Chip,Heavy_Metal,5,-1
+SPL-2026-0503,B-250504-7,Wafer Vanilla,Heavy_Metal,3,1
+SPL-2026-0512,B-250504-7,Cookies Choco Chip,Physicochemical,2,0
+SPL-2026-0877,B-250506-6,Cracker Plain,Physicochemical,5,0
+SPL-2026-0817,B-250507-6,Butter Biscuit,Physicochemical,3,0
+SPL-2026-0609,B-250508-5,Wafer Vanilla,Heavy_Metal,1,0
+SPL-2026-0107,B-250512-7,Cookies Choco Chip,Physicochemical,2,0
+SPL-2026-0786,B-250512-1,Cracker Filled,Physicochemical,3,0
+SPL-2026-0906,B-250513-7,Cracker Filled,Physicochemical,5,0
+SPL-2026-0413,B-250516-8,Marie Biscuit,Physicochemical,2,0
+SPL-2026-0660,B-250517-2,Sandwich Biscuit,Heavy_Metal,1,0
+SPL-2026-0818,B-250517-7,Butter Biscuit,Physicochemical,5,0
+SPL-2026-0562,B-250518-3,Butter Biscuit,Heavy_Metal,1,-1
+SPL-2026-0425,B-250519-3,Sandwich Biscuit,Heavy_Metal,1,-1
+SPL-2026-0804,B-250521-1,Wafer Vanilla,Physicochemical,3,0
+SPL-2026-0297,B-250523-2,Cookies Choco Chip,Heavy_Metal,5,-1
+SPL-2026-0261,B-250524-1,Cookies Choco Chip,Physicochemical,2,-1
+SPL-2026-0123,B-250526-5,Cracker Filled,Physicochemical,3,0
+SPL-2026-0640,B-250528-7,Wafer Vanilla,Physicochemical,5,0
+SPL-2026-0192,B-250531-4,Cracker Filled,Physicochemical,3,0
+SPL-2026-0410,B-250602-1,Butter Biscuit,Microbiological,4,-1
+SPL-2026-0483,B-250606-2,Marie Biscuit,Physicochemical,3,-1
+SPL-2026-0862,B-250609-8,Wafer Vanilla,Physicochemical,5,0
+SPL-2026-0239,B-250610-4,Sandwich Biscuit,Heavy_Metal,1,-1
+SPL-2026-0403,B-250611-6,Sandwich Biscuit,Physicochemical,5,0
+SPL-2026-0316,B-250611-1,Cracker Filled,Physicochemical,3,-1
+SPL-2026-0476,B-250613-4,Cookies Choco Chip,Physicochemical,3,0
+SPL-2026-0391,B-250615-4,Cookies Choco Chip,Stability,1,0
+SPL-2026-0060,B-250617-4,Cracker Filled,Physicochemical,2,0
+SPL-2026-0821,B-250618-5,Butter Biscuit,Physicochemical,5,-1
+SPL-2026-0014,B-250619-8,Cookies Choco Chip,Heavy_Metal,2,-1
+SPL-2026-0177,B-250620-1,Cookies Choco Chip,Physicochemical,1,-1
+SPL-2026-0576,B-250621-3,Sandwich Biscuit,Physicochemical,2,0
+SPL-2026-0514,B-250628-7,Cookies Choco Chip,Physicochemical,1,-1
+SPL-2026-0905,B-250629-6,Cracker Plain,Physicochemical,5,-1
+SPL-2026-0494,B-250629-5,Cracker Filled,Physicochemical,2,0
+SPL-2026-0511,B-250630-2,Wafer Vanilla,Physicochemical,1,0
+SPL-2026-0176,B-250702-7,Cracker Plain,Heavy_Metal,5,0
+SPL-2026-0160,B-250703-3,Cookies Choco Chip,Microbiological,0,-1
+SPL-2026-0900,B-250703-2,Cracker Filled,Physicochemical,5,0
+SPL-2026-0372,B-250705-7,Cracker Filled,Physicochemical,2,0
+SPL-2026-0647,B-250705-5,Cracker Plain,Physicochemical,5,0
+SPL-2026-0383,B-250707-8,Wafer Vanilla,Physicochemical,5,0
+SPL-2026-0312,B-250707-1,Cracker Filled,Physicochemical,2,0
+SPL-2026-0685,B-250713-5,Marie Biscuit,Physicochemical,2,0
+SPL-2026-0927,B-250714-5,Cracker Plain,Physicochemical,2,0
+SPL-2026-0052,B-250717-3,Marie Biscuit,Physicochemical,3,-1
+SPL-2026-0360,B-250717-2,Cookies Choco Chip,Physicochemical,2,0
+SPL-2026-0138,B-250717-1,Butter Biscuit,Physicochemical,3,0
+SPL-2026-0864,B-250720-5,Cookies Choco Chip,Physicochemical,1,0
+SPL-2026-0967,B-250720-2,Cracker Filled,Physicochemical,5,0
+SPL-2026-0268,B-250721-6,Sandwich Biscuit,Stability,1,0
+SPL-2026-0772,B-250723-1,Wafer Vanilla,Physicochemical,2,0
+SPL-2026-0593,B-250727-5,Marie Biscuit,Stability,1,0
+SPL-2026-0017,B-250727-4,Cracker Plain,Physicochemical,5,-1
+SPL-2026-0881,B-250727-1,Butter Biscuit,Physicochemical,5,0
+SPL-2026-0629,B-250729-5,Cracker Plain,Physicochemical,2,0
+SPL-2026-0774,B-250801-6,Cookies Choco Chip,Physicochemical,5,-1
+SPL-2026-0478,B-250801-2,Butter Biscuit,Physicochemical,2,0
+SPL-2026-0754,B-250802-6,Wafer Vanilla,Physicochemical,5,0
+SPL-2026-0320,B-250803-7,Cookies Choco Chip,Physicochemical,5,0
+SPL-2026-0168,B-250804-7,Marie Biscuit,Microbiological,4,-1
+SPL-2026-0956,B-250805-8,Cracker Filled,Physicochemical,5,0
+SPL-2026-0847,B-250806-7,Marie Biscuit,Physicochemical,5,0
+SPL-2026-0688,B-250809-5,Cracker Filled,Microbiological,0,-1
+SPL-2026-0340,B-250809-1,Wafer Vanilla,Microbiological,4,-1
+SPL-2026-0762,B-250809-4,Cracker Plain,Physicochemical,2,0
+SPL-2026-0495,B-250810-4,Sandwich Biscuit,Physicochemical,3,0
+SPL-2026-0584,B-250812-6,Butter Biscuit,Physicochemical,2,0
+SPL-2026-0485,B-250812-3,Cracker Plain,Microbiological,4,-1
+SPL-2026-0719,B-250812-5,Marie Biscuit,Physicochemical,2,0
+SPL-2026-0888,B-250812-1,Marie Biscuit,Heavy_Metal,1,-1
+SPL-2026-0309,B-250813-3,Sandwich Biscuit,Physicochemical,2,0
+SPL-2026-0043,B-250813-6,Cracker Filled,Physicochemical,5,-1
+SPL-2026-0635,B-250813-1,Marie Biscuit,Heavy_Metal,1,0
+SPL-2026-0079,B-250814-3,Cracker Plain,Physicochemical,2,0
+SPL-2026-0678,B-250815-8,Butter Biscuit,Stability,1,-1
+SPL-2026-0444,B-250822-2,Cracker Plain,Physicochemical,3,0
+SPL-2026-0100,B-250823-2,Butter Biscuit,Microbiological,4,-1
+SPL-2026-0039,B-250824-8,Marie Biscuit,Stability,1,0
+SPL-2026-0418,B-250825-3,Butter Biscuit,Physicochemical,5,0
+SPL-2026-0729,B-250828-5,Cracker Plain,Microbiological,5,0
+SPL-2026-0331,B-250831-1,Cracker Plain,Physicochemical,2,0
+SPL-2026-0368,B-250902-2,Sandwich Biscuit,Physicochemical,5,0
+SPL-2026-0458,B-250903-8,Cracker Filled,Heavy_Metal,5,0
+SPL-2026-0803,B-250903-8,Cracker Plain,Heavy_Metal,1,0
+SPL-2026-0566,B-250903-4,Marie Biscuit,Physicochemical,2,0
+SPL-2026-0555,B-250905-8,Wafer Vanilla,Physicochemical,5,-1
+SPL-2026-0520,B-250906-8,Cracker Filled,Heavy_Metal,5,1
+SPL-2026-0075,B-250910-6,Cracker Filled,Physicochemical,5,0
+SPL-2026-0697,B-250911-2,Cookies Choco Chip,Physicochemical,3,0
+SPL-2026-0789,B-250913-1,Cracker Plain,Physicochemical,3,0
+SPL-2026-0799,B-250916-6,Sandwich Biscuit,Physicochemical,2,0
+SPL-2026-0508,B-250917-5,Marie Biscuit,Heavy_Metal,1,-1
+SPL-2026-0146,B-250918-4,Cookies Choco Chip,Physicochemical,3,0
+SPL-2026-0932,B-250918-6,Cracker Filled,Physicochemical,2,0
+SPL-2026-0808,B-250918-3,Butter Biscuit,Stability,2,0
+SPL-2026-0116,B-250922-2,Cracker Plain,Microbiological,4,-1
+SPL-2026-0549,B-250924-4,Cracker Plain,Physicochemical,3,0
+SPL-2026-0120,B-250924-6,Butter Biscuit,Physicochemical,3,0
+SPL-2026-0814,B-250925-8,Marie Biscuit,Physicochemical,3,0
+SPL-2026-0519,B-250925-2,Cracker Plain,Physicochemical,5,0
+SPL-2026-0356,B-250926-3,Wafer Vanilla,Physicochemical,2,0
+SPL-2026-0053,B-250928-3,Sandwich Biscuit,Heavy_Metal,5,1
+SPL-2026-0091,B-250929-8,Cracker Plain,Physicochemical,3,-1
+SPL-2026-0379,B-250929-8,Sandwich Biscuit,Physicochemical,5,0
+SPL-2026-0008,B-250929-2,Cracker Filled,Stability,1,-1
+SPL-2026-0217,B-251001-4,Butter Biscuit,Heavy_Metal,5,-1
+SPL-2026-0241,B-251002-2,Butter Biscuit,Heavy_Metal,1,-1
+SPL-2026-0490,B-251002-3,Cracker Filled,Microbiological,0,-1
+SPL-2026-0680,B-251005-3,Wafer Vanilla,Physicochemical,3,0
+SPL-2026-0583,B-251006-3,Butter Biscuit,Stability,5,-1
+SPL-2026-0460,B-251006-1,Butter Biscuit,Physicochemical,1,0
+SPL-2026-0686,B-251008-4,Cookies Choco Chip,Heavy_Metal,1,-1
+SPL-2026-0849,B-251009-3,Cookies Choco Chip,Heavy_Metal,5,-1
+SPL-2026-0859,B-251010-6,Cracker Filled,Physicochemical,5,-1
+SPL-2026-0311,B-251011-3,Cracker Filled,Stability,1,0
+SPL-2026-0074,B-251011-3,Butter Biscuit,Physicochemical,2,0
+SPL-2026-0195,B-251011-6,Wafer Vanilla,Physicochemical,3,0
+SPL-2026-0957,B-251013-1,Sandwich Biscuit,Heavy_Metal,3,-1
+SPL-2026-0164,B-251014-8,Sandwich Biscuit,Microbiological,5,-1
+SPL-2026-0991,B-251014-4,Sandwich Biscuit,Heavy_Metal,3,1
+SPL-2026-0553,B-251015-2,Cookies Choco Chip,Heavy_Metal,3,-1
+SPL-2026-0335,B-251016-5,Cracker Plain,Stability,1,-1
+SPL-2026-0901,B-251016-5,Butter Biscuit,Physicochemical,5,0
+SPL-2026-0636,B-251017-1,Cracker Filled,Physicochemical,3,-1
+SPL-2026-0140,B-251019-4,Cracker Plain,Physicochemical,1,-1
+SPL-2026-0848,B-251020-4,Butter Biscuit,Physicochemical,3,-1
+SPL-2026-0497,B-251025-7,Butter Biscuit,Heavy_Metal,5,1
+SPL-2026-0997,B-251026-3,Cracker Plain,Physicochemical,2,0
+SPL-2026-0129,B-251028-1,Cracker Filled,Physicochemical,2,0
+SPL-2026-0672,B-251103-7,Cracker Filled,Physicochemical,5,0
+SPL-2026-0728,B-251104-1,Butter Biscuit,Physicochemical,3,0
+SPL-2026-0455,B-251105-7,Cracker Filled,Heavy_Metal,5,-1
+SPL-2026-0897,B-251107-6,Cracker Plain,Physicochemical,2,0
+SPL-2026-0628,B-251112-1,Sandwich Biscuit,Heavy_Metal,2,1
+SPL-2026-0118,B-251113-5,Butter Biscuit,Physicochemical,2,0
+SPL-2026-0318,B-251115-4,Cookies Choco Chip,Physicochemical,2,0
+SPL-2026-0546,B-251115-4,Butter Biscuit,Physicochemical,5,0
+SPL-2026-0873,B-251122-7,Butter Biscuit,Stability,1,-1
+SPL-2026-0525,B-251122-1,Sandwich Biscuit,Physicochemical,2,0
+SPL-2026-0952,B-251125-5,Sandwich Biscuit,Physicochemical,5,0
+SPL-2026-0758,B-251125-6,Sandwich Biscuit,Physicochemical,3,0
+SPL-2026-0662,B-251126-7,Cookies Choco Chip,Physicochemical,2,-1
+SPL-2026-0305,B-251126-8,Cracker Plain,Heavy_Metal,3,-1
+SPL-2026-0885,B-251130-3,Cookies Choco Chip,Physicochemical,3,0
+SPL-2026-0846,B-251130-4,Butter Biscuit,Physicochemical,3,-1
+SPL-2026-0200,B-251201-2,Wafer Vanilla,Stability,1,0
+SPL-2026-0540,B-251201-4,Butter Biscuit,Physicochemical,5,0
+SPL-2026-0554,B-251201-2,Sandwich Biscuit,Microbiological,4,-1
+SPL-2026-0397,B-251201-8,Butter Biscuit,Physicochemical,2,0
+SPL-2026-0290,B-251202-4,Cracker Plain,Physicochemical,2,0
+SPL-2026-0211,B-251203-6,Marie Biscuit,Physicochemical,2,0
+SPL-2026-0982,B-251203-1,Cracker Filled,Physicochemical,2,0
+SPL-2026-0171,B-251206-1,Butter Biscuit,Physicochemical,2,0
+SPL-2026-0172,B-251207-6,Butter Biscuit,Physicochemical,3,0
+SPL-2026-0370,B-251209-2,Cookies Choco Chip,Physicochemical,2,0
+SPL-2026-0417,B-251209-5,Wafer Vanilla,Physicochemical,3,0
+SPL-2026-0585,B-251210-3,Sandwich Biscuit,Physicochemical,2,0
+SPL-2026-0128,B-251211-6,Cookies Choco Chip,Heavy_Metal,5,-1
+SPL-2026-0337,B-251211-4,Wafer Vanilla,Microbiological,3,-1
+SPL-2026-0985,B-251211-6,Cracker Filled,Physicochemical,1,-1
+SPL-2026-0221,B-251217-8,Butter Biscuit,Physicochemical,3,-1
+SPL-2026-0887,B-251218-8,Butter Biscuit,Heavy_Metal,2,0
+SPL-2026-0398,B-251219-3,Marie Biscuit,Stability,1,0
+SPL-2026-0959,B-251223-5,Wafer Vanilla,Heavy_Metal,3,-1
+SPL-2026-0049,B-251227-7,Cracker Filled,Physicochemical,5,0
+SPL-2026-0306,B-251229-1,Butter Biscuit,Stability,1,0
+SPL-2026-0274,B-251231-4,Wafer Vanilla,Physicochemical,2,0
+SPL-2026-0298,B-260101-4,Cracker Plain,Physicochemical,5,-1
+SPL-2026-0327,B-260102-3,Marie Biscuit,Heavy_Metal,5,0
+SPL-2026-0780,B-260105-1,Cookies Choco Chip,Physicochemical,3,0
+SPL-2026-0547,B-260107-7,Cracker Plain,Heavy_Metal,2,-1
+SPL-2026-0064,B-260116-6,Wafer Vanilla,Physicochemical,3,0
+SPL-2026-0041,B-260117-3,Marie Biscuit,Physicochemical,2,0
+SPL-2026-0539,B-260117-5,Cracker Plain,Physicochemical,3,0
+SPL-2026-0332,B-260123-7,Sandwich Biscuit,Physicochemical,2,0
+SPL-2026-0675,B-260123-8,Cracker Filled,Stability,1,-1
+SPL-2026-0750,B-260124-8,Marie Biscuit,Physicochemical,2,0
+SPL-2026-0119,B-260126-5,Marie Biscuit,Physicochemical,3,0
+SPL-2026-0137,B-260127-5,Cracker Filled,Heavy_Metal,3,-1
+SPL-2026-0033,B-260130-1,Butter Biscuit,Physicochemical,2,0
+SPL-2026-0714,B-260201-5,Cookies Choco Chip,Physicochemical,1,0
+SPL-2026-0602,B-260203-2,Cookies Choco Chip,Microbiological,4,-1
+SPL-2026-0282,B-260204-3,Cracker Plain,Physicochemical,5,0
+SPL-2026-0449,B-260204-7,Cracker Plain,Stability,1,-1
+SPL-2026-0281,B-260204-7,Marie Biscuit,Heavy_Metal,1,1
+SPL-2026-0394,B-260205-2,Cracker Filled,Physicochemical,2,0
+SPL-2026-0139,B-260206-5,Sandwich Biscuit,Physicochemical,5,-1
+SPL-2026-0036,B-260206-7,Butter Biscuit,Physicochemical,2,0
+SPL-2026-0899,B-260208-7,Butter Biscuit,Heavy_Metal,5,1
+SPL-2026-0667,B-260210-2,Cracker Plain,Physicochemical,5,0
+SPL-2026-0378,B-260211-2,Cookies Choco Chip,Physicochemical,1,-1
+SPL-2026-0674,B-260214-2,Butter Biscuit,Physicochemical,2,0
+SPL-2026-0868,B-260215-2,Cookies Choco Chip,Physicochemical,5,0
+SPL-2026-0204,B-260216-3,Cracker Filled,Physicochemical,5,0
+SPL-2026-0822,B-260217-7,Cracker Filled,Heavy_Metal,1,-1
+SPL-2026-0339,B-260223-1,Marie Biscuit,Heavy_Metal,1,1
+SPL-2026-0914,B-260224-2,Wafer Vanilla,Physicochemical,5,0
+SPL-2026-0441,B-260225-3,Wafer Vanilla,Heavy_Metal,1,0
+SPL-2026-0498,B-260226-8,Sandwich Biscuit,Physicochemical,2,0
+SPL-2026-0212,B-260227-7,Cookies Choco Chip,Physicochemical,3,0
+SPL-2026-0430,B-260302-3,Cookies Choco Chip,Physicochemical,3,0
+SPL-2026-0133,B-260305-5,Butter Biscuit,Physicochemical,1,0
+SPL-2026-0986,B-260305-6,Cracker Filled,Physicochemical,5,0
+SPL-2026-0736,B-260307-2,Cracker Filled,Heavy_Metal,3,-1
+SPL-2026-0087,B-260309-6,Butter Biscuit,Physicochemical,2,0
+SPL-2026-0749,B-260311-4,Sandwich Biscuit,Physicochemical,1,0
+SPL-2026-0535,B-260317-7,Cracker Filled,Physicochemical,1,-1
+SPL-2026-0025,B-260320-1,Cookies Choco Chip,Heavy_Metal,5,-1
+SPL-2026-0264,B-260321-5,Wafer Vanilla,Physicochemical,5,0
+SPL-2026-0923,B-260322-1,Cracker Plain,Physicochemical,3,0
+SPL-2026-0987,B-260323-6,Cracker Filled,Physicochemical,1,0
+SPL-2026-0603,B-260323-7,Cookies Choco Chip,Microbiological,0,-1
+SPL-2026-0971,B-260324-5,Sandwich Biscuit,Physicochemical,2,0
+SPL-2026-0933,B-260327-2,Marie Biscuit,Physicochemical,2,0
+SPL-2026-0080,B-260328-2,Cracker Filled,Physicochemical,5,-1
+SPL-2026-0016,B-260329-3,Cookies Choco Chip,Physicochemical,3,0
+SPL-2026-0969,B-260330-6,Wafer Vanilla,Heavy_Metal,1,-1
+SPL-2026-0863,B-260403-7,Butter Biscuit,Physicochemical,2,0
+SPL-2026-0884,B-260403-1,Marie Biscuit,Physicochemical,2,1
+SPL-2026-0548,B-260404-5,Cracker Filled,Physicochemical,3,0
+SPL-2026-0896,B-260405-5,Cracker Filled,Physicochemical,3,-1
+SPL-2026-0465,B-260406-4,Butter Biscuit,Physicochemical,2,0
+SPL-2026-0314,B-260406-1,Marie Biscuit,Physicochemical,5,-1
+SPL-2026-0552,B-260406-3,Sandwich Biscuit,Heavy_Metal,5,-1
+SPL-2026-0310,B-260406-5,Butter Biscuit,Heavy_Metal,5,-1
+SPL-2026-0401,B-260407-1,Wafer Vanilla,Physicochemical,2,0
+SPL-2026-0042,B-260408-8,Cookies Choco Chip,Stability,1,-1
+SPL-2026-0419,B-260410-3,Sandwich Biscuit,Physicochemical,5,0
+SPL-2026-0486,B-260411-3,Marie Biscuit,Stability,1,-1
+SPL-2026-0589,B-260411-8,Cookies Choco Chip,Microbiological,0,-1
+SPL-2026-0521,B-260412-4,Sandwich Biscuit,Physicochemical,3,0
+SPL-2026-0325,B-260413-6,Wafer Vanilla,Heavy_Metal,5,-1
+SPL-2026-0214,B-260414-1,Cracker Plain,Stability,1,0
+SPL-2026-0245,B-260418-6,Cracker Filled,Physicochemical,3,0
+SPL-2026-0943,B-260418-7,Wafer Vanilla,Physicochemical,3,0
+SPL-2026-0201,B-260420-3,Sandwich Biscuit,Stability,5,-1
+SPL-2026-0141,B-260421-6,Wafer Vanilla,Heavy_Metal,3,1
+SPL-2026-0792,B-260421-2,Cracker Plain,Physicochemical,3,0
+SPL-2026-0371,B-260421-1,Sandwich Biscuit,Physicochemical,2,0
+SPL-2026-0713,B-260421-8,Cookies Choco Chip,Heavy_Metal,2,0
+SPL-2026-0815,B-260423-2,Cookies Choco Chip,Heavy_Metal,3,-1
+SPL-2026-0324,B-260424-6,Wafer Vanilla,Physicochemical,3,0
+SPL-2026-0375,B-260425-6,Wafer Vanilla,Physicochemical,2,0
+SPL-2026-0384,B-260430-4,Marie Biscuit,Physicochemical,3,-1
+SPL-2026-0170,B-260511-8,Butter Biscuit,Heavy_Metal,1,0
+SPL-2026-0705,B-260512-1,Butter Biscuit,Physicochemical,1,0
+SPL-2026-0081,B-260512-7,Wafer Vanilla,Physicochemical,3,0
+SPL-2026-0564,B-260512-4,Marie Biscuit,Physicochemical,2,0
+SPL-2026-0006,B-260513-2,Wafer Vanilla,Microbiological,4,-1
+SPL-2026-0990,B-260514-4,Cookies Choco Chip,Microbiological,4,-1
+SPL-2026-0679,B-260515-5,Cracker Plain,Physicochemical,3,-1
+SPL-2026-0067,B-260515-6,Wafer Vanilla,Microbiological,5,-1
+SPL-2026-0143,B-260518-8,Marie Biscuit,Physicochemical,5,0
+SPL-2026-0109,B-260523-3,Cracker Plain,Heavy_Metal,5,-1
+SPL-2026-0837,B-260524-8,Cookies Choco Chip,Microbiological,5,-1
+SPL-2026-0421,B-260528-3,Wafer Vanilla,Physicochemical,3,0
+SPL-2026-0083,B-260602-3,Marie Biscuit,Physicochemical,2,0
+SPL-2026-0939,B-260603-8,Cracker Plain,Physicochemical,2,0
+SPL-2026-0700,B-260604-1,Butter Biscuit,Physicochemical,2,0
+SPL-2026-0377,B-260604-7,Cookies Choco Chip,Physicochemical,2,0
+SPL-2026-0243,B-260605-4,Butter Biscuit,Physicochemical,2,0
+SPL-2026-0226,B-260608-5,Sandwich Biscuit,Physicochemical,1,-1
+SPL-2026-0381,B-260614-2,Butter Biscuit,Heavy_Metal,3,-1
+SPL-2026-0198,B-260615-7,Butter Biscuit,Heavy_Metal,1,-1
+SPL-2026-0707,B-260616-6,Butter Biscuit,Physicochemical,5,-1
+SPL-2026-0228,B-260616-8,Cracker Filled,Physicochemical,1,0
+SPL-2026-0676,B-260616-5,Cookies Choco Chip,Physicochemical,3,0
+SPL-2026-0828,B-260616-8,Wafer Vanilla,Microbiological,4,-1
+SPL-2026-0570,B-260616-8,Cracker Plain,Physicochemical,2,0
+SPL-2026-0457,B-260616-7,Marie Biscuit,Physicochemical,2,0
+SPL-2026-0246,B-260617-7,Butter Biscuit,Physicochemical,5,-1
+SPL-2026-0747,B-260618-2,Cracker Plain,Physicochemical,2,0
+SPL-2026-0962,B-260618-4,Sandwich Biscuit,Heavy_Metal,1,-1
+SPL-2026-0117,B-260622-8,Butter Biscuit,Physicochemical,3,0
+SPL-2026-0422,B-260622-7,Cracker Filled,Physicochemical,5,-1
+SPL-2026-0346,B-260623-3,Marie Biscuit,Physicochemical,2,0
+SPL-2026-0336,B-260624-5,Cookies Choco Chip,Heavy_Metal,3,0

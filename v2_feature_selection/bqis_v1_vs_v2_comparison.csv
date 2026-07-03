@@ -1,0 +1,4 @@
+Metode,ARI_v1_baseline,ARI_v2_feature_selected,NMI_v2_feature_selected
+K-Means,0.13,0.259,0.433
+DBSCAN,0.281,0.239,0.218
+GMM,-,0.101,0.13
