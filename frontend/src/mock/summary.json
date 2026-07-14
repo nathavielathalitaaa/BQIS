@@ -1,0 +1,39 @@
+{
+  "totalSamples": 4826,
+  "predictedPass": 3491,
+  "predictedFail": 1335,
+  "avgConfidence": 94.7,
+  "passRate": 72.3,
+  "failRate": 27.7,
+  "analysisDate": "July 2026",
+  "batch": "BCH-07-003",
+  "product": "All Products",
+  "riskSummary": {
+    "high": 229,
+    "medium": 73,
+    "low": 46,
+    "pass": 3491
+  },
+  "topRisks": [
+    { "category": "Microbiological Contamination", "samples": 142, "risk": "High",   "action": "Immediate re-inspection" },
+    { "category": "Physicochemical Non-compliance", "samples": 87,  "risk": "High",   "action": "Halt certification" },
+    { "category": "Heavy Metal Exceedance",          "samples": 69,  "risk": "High",   "action": "Supplier audit" },
+    { "category": "Moisture / Stability Deviation",  "samples": 98,  "risk": "Medium", "action": "Selective re-testing" }
+  ],
+  "parameterImpact": [
+    { "label": "Moisture Content",  "shapVal": 0.1872 },
+    { "label": "Water Activity",    "shapVal": 0.1543 },
+    { "label": "Protein",          "shapVal": 0.1021 },
+    { "label": "Lead (Pb)",        "shapVal": 0.0934 },
+    { "label": "Peroxide Value",   "shapVal": 0.0812 }
+  ],
+  "auditRecommendation": "Based on AI analysis of 4,826 samples, 348 samples (27.7%) are predicted to fail SNI 2973:2022 compliance standards. Immediate action is recommended for 229 High Risk samples (Microbiological + Physicochemical clusters). The XGBoost model identified Moisture Content (SHAP: 0.187) and Water Activity (SHAP: 0.154) as the primary drivers of quality failure. Mandatory auditor review required before certification of batches BCH-07-001 and BCH-07-003.",
+  "bottomStats": [
+    { "label": "Samples Analyzed",   "value": "4,826", "sub": "Selected period" },
+    { "label": "Compliance Rate",    "value": "72.3%", "sub": "Predicted PASS" },
+    { "label": "Critical Failures",  "value": "229",   "sub": "High risk — urgent" },
+    { "label": "Model Confidence",   "value": "94.7%", "sub": "Avg. XGBoost score" },
+    { "label": "Top Risk Parameter", "value": "Moisture", "sub": "SHAP: 0.187" },
+    { "label": "Batch Flag",         "value": "BCH-07-003", "sub": "Highest failure count" }
+  ]
+}

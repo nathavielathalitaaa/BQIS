@@ -1,0 +1,20 @@
+{
+  "topParam": "Moisture Content",
+  "topShap": 0.187,
+  "paramCount": 12,
+  "affectedSamples": "94.7%",
+  "parameters": [
+    { "feature": "Moisture_Content_%",     "label": "Moisture Content",   "meanAbs": 0.1872, "relativePct": 22.4, "direction": "Positive", "interpretation": "Higher moisture content increases probability of Fail — exceeds SNI 5% limit" },
+    { "feature": "Water_Activity_Aw",      "label": "Water Activity",     "meanAbs": 0.1543, "relativePct": 18.5, "direction": "Positive", "interpretation": "Elevated water activity promotes microbial growth, driving Fail prediction" },
+    { "feature": "Protein_Content_%",      "label": "Protein",            "meanAbs": 0.1021, "relativePct": 12.2, "direction": "Negative", "interpretation": "Lower protein content correlates with substandard raw material quality" },
+    { "feature": "Lead_Pb_mgkg",           "label": "Lead (Pb)",          "meanAbs": 0.0934, "relativePct": 11.2, "direction": "Positive", "interpretation": "Lead concentration approaching SNI 0.50 mg/kg limit triggers high risk" },
+    { "feature": "Peroxide_Value",         "label": "Peroxide Value",     "meanAbs": 0.0812, "relativePct": 9.7,  "direction": "Positive", "interpretation": "High peroxide value indicates lipid oxidation and rancidity risk" },
+    { "feature": "Acid_Value_mgKOHg",      "label": "Acid Value",         "meanAbs": 0.0698, "relativePct": 8.4,  "direction": "Positive", "interpretation": "Acid value above SNI 2.0 mg KOH/g limit indicates fat degradation" },
+    { "feature": "Total_Plate_Count_CFUg", "label": "Total Plate Count",  "meanAbs": 0.0563, "relativePct": 6.7,  "direction": "Positive", "interpretation": "Elevated TPC indicates active microbial contamination in product" },
+    { "feature": "Yeast_Mold_Count_CFUg",  "label": "Yeast & Mold Count", "meanAbs": 0.0441, "relativePct": 5.3,  "direction": "Positive", "interpretation": "Yeast/mold exceedance signals inadequate hygiene control in process" },
+    { "feature": "pH",                     "label": "pH",                 "meanAbs": 0.0312, "relativePct": 3.7,  "direction": "Negative", "interpretation": "Abnormal pH deviations correlate with fermentation or contamination issues" },
+    { "feature": "Salt_Content",           "label": "Salt Content",       "meanAbs": 0.0241, "relativePct": 2.9,  "direction": "Positive", "interpretation": "Excessive salt content contributes to physicochemical non-compliance" },
+    { "feature": "Fat_Content_%",          "label": "Fat Content",        "meanAbs": 0.0198, "relativePct": 2.4,  "direction": "Negative", "interpretation": "Lower fat deviates from product specification requirements" },
+    { "feature": "Cadmium_Cd_mgkg",        "label": "Cadmium (Cd)",       "meanAbs": 0.0165, "relativePct": 2.0,  "direction": "Positive", "interpretation": "Cadmium approaching SNI 0.20 mg/kg limit signals heavy metal risk" }
+  ]
+}

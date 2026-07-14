@@ -1,0 +1,31 @@
+{
+  "totalSamples": 1000,
+  "predictedPass": 652,
+  "predictedFail": 348,
+  "highRisk": 229,
+  "avgConfidence": 96.4,
+  "riskDistribution": [
+    { "name": "Pass",        "value": 652, "color": "#2E7D32" },
+    { "name": "High Risk",   "value": 229, "color": "#D32F2F" },
+    { "name": "Medium Risk", "value": 73,  "color": "#F9A825" },
+    { "name": "Low Risk",    "value": 46,  "color": "#82E0AA" }
+  ],
+  "riskTable": [
+    { "level": "Pass",        "count": 652, "pct": "65.2%", "action": "Clear for certification",    "priority": "—"        },
+    { "level": "High Risk",   "count": 229, "pct": "22.9%", "action": "Immediate auditor review",   "priority": "URGENT"   },
+    { "level": "Medium Risk", "count": 73,  "pct": "7.3%",  "action": "Selective re-testing",       "priority": "HIGH"     },
+    { "level": "Low Risk",    "count": 46,  "pct": "4.6%",  "action": "Standard monitoring",        "priority": "NORMAL"   }
+  ],
+  "recentSamples": [
+    { "id": "S-1001", "batch": "BCH-07-003", "product": "Butter Biscuit",    "prediction": "FAIL", "risk": "High Risk",   "confidence": 94.2 },
+    { "id": "S-1002", "batch": "BCH-07-003", "product": "Marie Biscuit",     "prediction": "PASS", "risk": "Pass",        "confidence": 98.1 },
+    { "id": "S-1003", "batch": "BCH-07-001", "product": "Cracker Plain",     "prediction": "FAIL", "risk": "High Risk",   "confidence": 91.7 },
+    { "id": "S-1004", "batch": "BCH-07-001", "product": "Cookies Choco Chip","prediction": "PASS", "risk": "Pass",        "confidence": 97.5 },
+    { "id": "S-1005", "batch": "BCH-06-012", "product": "Sandwich Biscuit",  "prediction": "FAIL", "risk": "Medium Risk", "confidence": 78.3 },
+    { "id": "S-1006", "batch": "BCH-06-012", "product": "Wafer Vanilla",     "prediction": "PASS", "risk": "Pass",        "confidence": 99.2 },
+    { "id": "S-1007", "batch": "BCH-07-003", "product": "Cracker Filled",    "prediction": "FAIL", "risk": "High Risk",   "confidence": 88.6 },
+    { "id": "S-1008", "batch": "BCH-07-001", "product": "Butter Biscuit",    "prediction": "PASS", "risk": "Pass",        "confidence": 95.9 },
+    { "id": "S-1009", "batch": "BCH-07-003", "product": "Marie Biscuit",     "prediction": "FAIL", "risk": "Low Risk",    "confidence": 63.1 },
+    { "id": "S-1010", "batch": "BCH-06-012", "product": "Cracker Plain",     "prediction": "PASS", "risk": "Pass",        "confidence": 97.8 }
+  ]
+}

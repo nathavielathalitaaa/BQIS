@@ -1,0 +1,442 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+/* ─── Design Tokens — TÜV NORD Corporate ────────────────────────── */
+:root {
+  --c-navy:      #00205B;   /* TÜV NORD primary navy */
+  --c-blue:      #0046D5;   /* Secondary blue */
+  --c-bg:        #F8F9FA;   /* Page background */
+  --c-card:      #FFFFFF;
+  --c-border:    #E0E0E5;
+  --c-text:      #111111;
+  --c-text-2:    #7F8C8D;
+  --c-fail:      #E74C3C;
+  --c-medium:    #F5B041;
+  --c-pass:      #2ECC71;
+  --c-low:       #82E0AA;
+
+  --sidebar-w:   260px;
+  --card-radius: 2px;
+  --shadow-card: 0 1px 2px rgba(0,0,0,0.06);
+}
+
+/* ─── Reset ─────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  background: var(--c-bg);
+  color: var(--c-text);
+  height: 100%;
+}
+
+#root {
+  display: flex;
+  height: 100vh;
+}
+
+/* ─── Scrollbar ─────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: #f0f0f5; }
+::-webkit-scrollbar-thumb { background: #c8c8d8; border-radius: 3px; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   SIDEBAR
+   ═══════════════════════════════════════════════════════════════════ */
+.layout-sidebar {
+  width: var(--sidebar-w);
+  min-width: var(--sidebar-w);
+  height: 100vh;
+  background: var(--c-navy);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  left: 0; top: 0;
+  z-index: 100;
+}
+
+.layout-content {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  height: 100vh;
+  overflow-y: auto;
+  background: var(--c-bg);
+}
+
+/* Logo */
+.sidebar-logo-area {
+  padding: 20px 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  margin-bottom: 12px;
+}
+.sidebar-logo-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1;
+  margin-bottom: 2px;
+  letter-spacing: -0.5px;
+}
+.sidebar-logo-subtitle {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.7);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+/* Navigation */
+.sidebar-nav { padding: 0 10px; flex: 1; }
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.85);
+  transition: background 0.15s, color 0.15s;
+  margin-bottom: 2px;
+  text-decoration: none;
+  user-select: none;
+}
+.nav-item:hover {
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+}
+.nav-item.active {
+  background: #fff;
+  color: var(--c-navy);
+  font-weight: 700;
+}
+.nav-icon { font-size: 15px; width: 18px; flex-shrink: 0; }
+
+/* Footer */
+.sidebar-footer {
+  padding: 14px 18px;
+  border-top: 1px solid rgba(255,255,255,0.15);
+  font-size: 11px;
+  color: rgba(255,255,255,0.45);
+  line-height: 1.6;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PAGE HEADER
+   ═══════════════════════════════════════════════════════════════════ */
+.page-header { padding: 24px 24px 0; }
+
+.breadcrumb {
+  font-size: 0.75rem;
+  color: var(--c-text-2);
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+.breadcrumb span { margin: 0 3px; }
+
+.page-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--c-navy);
+  margin-bottom: 4px;
+  line-height: 1.2;
+}
+
+.page-subtitle {
+  font-size: 0.8rem;
+  color: var(--c-text-2);
+  margin-bottom: 16px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   SECTION TITLES  (Streamlit .sec-title style)
+   ═══════════════════════════════════════════════════════════════════ */
+.sec-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #333;
+  padding-bottom: 10px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--c-border);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   CARDS
+   ═══════════════════════════════════════════════════════════════════ */
+.clean-card {
+  background: var(--c-card);
+  border: 1px solid var(--c-border);
+  border-radius: var(--card-radius);
+  padding: 18px 20px;
+  box-shadow: var(--shadow-card);
+}
+
+/* KPI / stat cards */
+.kpi-card {
+  background: var(--c-card);
+  border: 1px solid var(--c-border);
+  border-radius: var(--card-radius);
+  padding: 16px;
+  box-shadow: var(--shadow-card);
+  height: 100%;
+  transition: transform 0.15s;
+}
+.kpi-card:hover { transform: scale(1.01); }
+
+.kpi-label {
+  font-size: 0.75rem;
+  color: #555;
+  font-weight: 600;
+  margin-bottom: 6px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.kpi-number {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #111;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.kpi-sub {
+  font-size: 0.7rem;
+  color: #777;
+  line-height: 1.4;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   FILTER BAR  (Streamlit .filter-strip)
+   ═══════════════════════════════════════════════════════════════════ */
+.filter-strip {
+  background: var(--c-card);
+  border: 1px solid var(--c-border);
+  border-radius: var(--card-radius);
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.filter-strip-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #555;
+  white-space: nowrap;
+  width: 60px;
+}
+
+.filter-select {
+  height: 34px;
+  border: 1px solid var(--c-border);
+  border-radius: 2px;
+  padding: 0 8px;
+  font-size: 0.8rem;
+  font-family: 'Inter', sans-serif;
+  color: var(--c-text);
+  background: #FAFAFA;
+  outline: none;
+  cursor: pointer;
+  min-width: 160px;
+}
+.filter-select:focus { border-color: var(--c-navy); }
+
+.filter-select-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.filter-select-label {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: #555;
+}
+
+.btn-primary {
+  height: 34px;
+  padding: 0 20px;
+  background: var(--c-navy);
+  color: #fff;
+  border: none;
+  border-radius: 2px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+  margin-left: auto;
+}
+.btn-primary:hover { background: var(--c-blue); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   RIGHT PANEL  (Streamlit .right-panel-*)
+   ═══════════════════════════════════════════════════════════════════ */
+.right-panel-wrap { margin-bottom: 16px; }
+
+.right-panel-header {
+  background: var(--c-navy);
+  color: #fff;
+  padding: 12px 16px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border-radius: 2px 2px 0 0;
+}
+
+.right-panel-body {
+  background: var(--c-card);
+  border: 1px solid var(--c-border);
+  border-top: none;
+  padding: 16px;
+  border-radius: 0 0 2px 2px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   BADGES
+   ═══════════════════════════════════════════════════════════════════ */
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+.badge-high   { background: #FADBD8; color: #C0392B; }
+.badge-medium { background: #FDEBD0; color: #B9770E; }
+.badge-low    { background: #D5F5E3; color: #27AE60; }
+.badge-pass   { background: #EAF8F0; color: #27AE60; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   TABLE
+   ═══════════════════════════════════════════════════════════════════ */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.75rem;
+  color: #444;
+}
+.data-table thead {
+  background: #F8F9FA;
+  border-bottom: 2px solid var(--c-border);
+}
+.data-table th {
+  padding: 10px;
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #555;
+  white-space: nowrap;
+}
+.data-table th.center { text-align: center; }
+.data-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #F0F0F5;
+  vertical-align: middle;
+}
+.data-table td.center { text-align: center; }
+.data-table tr:nth-child(even) td { background: #FAFAFA; }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: #F4F5F8; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   GRID HELPERS
+   ═══════════════════════════════════════════════════════════════════ */
+.grid-5 { display: grid; grid-template-columns: repeat(5,1fr); gap: 16px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+.grid-6 { display: grid; grid-template-columns: repeat(6,1fr); gap: 12px; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   CONTENT AREA PADDING
+   ═══════════════════════════════════════════════════════════════════ */
+.content-inner {
+  padding: 20px 24px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   MISC UTILITIES
+   ═══════════════════════════════════════════════════════════════════ */
+.section-gap { margin-bottom: 20px; }
+.row-gap     { margin-bottom: 16px; }
+
+.text-pass   { color: var(--c-pass)  !important; }
+.text-fail   { color: var(--c-fail)  !important; }
+.text-medium { color: var(--c-medium)!important; }
+.text-navy   { color: var(--c-navy)  !important; }
+.text-muted  { color: var(--c-text-2)!important; }
+
+/* Cluster row */
+.cluster-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  background: #F8F9FA;
+  border: 1px solid #EAEAF0;
+  border-radius: 2px;
+  margin-bottom: 6px;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+.cluster-row:hover { background: #F0F1F5; }
+
+/* Workflow */
+.workflow-layer {
+  flex: 1;
+  border: 1px solid var(--c-border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.workflow-layer-header {
+  background: var(--c-navy);
+  color: #fff;
+  padding: 8px 12px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.workflow-layer-body {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  background: var(--c-card);
+}
+.workflow-item {
+  background: #F4F5F8;
+  border: 1px solid var(--c-border);
+  border-radius: 2px;
+  padding: 5px 10px;
+  font-size: 0.75rem;
+  color: var(--c-text);
+}
+.workflow-arrow {
+  display: flex;
+  align-items: center;
+  color: #9CA3AF;
+  font-size: 18px;
+  padding: 0 6px;
+  flex-shrink: 0;
+}
+
+/* Insight / recommendation boxes */
+.insight-box {
+  border: 1px solid var(--c-border);
+  border-radius: 2px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+}
+.rec-box {
+  background: #FDEDEC;
+  border: 1px solid #F5B7B1;
+  border-radius: 2px;
+  padding: 12px;
+}
+.rec-box-title { font-size: 0.75rem; font-weight: 700; color: var(--c-fail); margin-bottom: 4px; }
+.rec-box-body  { font-size: 0.75rem; color: #555; line-height: 1.6; }
+
+/* HR */
+hr { border: none; border-top: 1px solid var(--c-border); margin: 1.5rem 0; }

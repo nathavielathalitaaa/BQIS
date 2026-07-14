@@ -1,0 +1,60 @@
+{
+  "totalSamples": 1000,
+  "predictedPass": 652,
+  "predictedFail": 348,
+  "highRiskSamples": 229,
+  "avgConfidence": 96.4,
+  "passRate": 65.2,
+  "failRate": 34.8,
+  "riskDistribution": [
+    { "name": "Pass",        "value": 652, "color": "#2E7D32" },
+    { "name": "High Risk",   "value": 229, "color": "#D32F2F" },
+    { "name": "Medium Risk", "value": 73,  "color": "#F9A825" },
+    { "name": "Low Risk",    "value": 46,  "color": "#82E0AA" }
+  ],
+  "workflowLayers": [
+    {
+      "id": "layer1",
+      "title": "Layer 1 — Data Processing",
+      "items": ["CSV Upload", "KNN Imputation", "Outlier Detection", "IQR Flag (3.0×)", "StandardScaler"]
+    },
+    {
+      "id": "layer2",
+      "title": "Layer 2 — AI Engine",
+      "items": ["XGBoost Classifier", "SHAP Explainability", "K-Means Clustering", "DBSCAN Anomaly", "PCA Reduction"]
+    },
+    {
+      "id": "layer3",
+      "title": "Layer 3 — Audit Intelligence",
+      "items": ["Risk Scoring", "Failure Pattern Map", "Parameter Ranking", "Executive Summary", "Audit Report PDF"]
+    }
+  ],
+  "aiExplanations": [
+    {
+      "title": "XGBoost Prediction",
+      "body": "Gradient-boosted decision tree model trained on 800 samples (5-fold CV). Accuracy: 96.4% ± 0.3%. Partial data leakage disclaimer: model trained on simulated SNI-based threshold labels.",
+      "color": "#EFF6FF",
+      "borderColor": "#BFDBFE"
+    },
+    {
+      "title": "SHAP Explainability",
+      "body": "SHapley Additive exPlanations quantify the contribution of each laboratory parameter to every individual prediction, providing auditor-interpretable reasoning for each PASS/FAIL decision.",
+      "color": "#F0FDF4",
+      "borderColor": "#BBF7D0"
+    },
+    {
+      "title": "K-Means Failure Clustering",
+      "body": "Feature-selected K-Means (k=4) identifies recurring failure patterns: Microbiological, Physicochemical, Heavy Metal, and Stability clusters. ARI: 0.398 vs. ground truth categories.",
+      "color": "#FFFBEB",
+      "borderColor": "#FDE68A"
+    }
+  ],
+  "bottomKpis": [
+    { "label": "Model Accuracy (CV)",    "value": "96.4%",      "sub": "5-fold cross-validation" },
+    { "label": "Held-Out Test Accuracy", "value": "98.0%",      "sub": "200 independent samples" },
+    { "label": "F1-Score",               "value": "0.971",      "sub": "Held-out test set" },
+    { "label": "ARI (K-Means)",          "value": "0.398",      "sub": "vs. failure category ground truth" },
+    { "label": "NMI",                    "value": "0.448",      "sub": "Normalized Mutual Information" },
+    { "label": "Outlier Flag Rate",      "value": "13.1%",      "sub": "131 / 1000 samples flagged IQR×3" }
+  ]
+}
