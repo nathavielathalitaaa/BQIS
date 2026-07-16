@@ -11,8 +11,7 @@ import Header    from '../components/Header'
 import StatCard  from '../components/StatCard'
 import FilterBar from '../components/FilterBar'
 import ShapChart from '../components/ShapChart'
-
-const fadeIn = { initial: { opacity: 0, y: 8 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.2 } }
+import { fadeIn, LoadingSkeleton } from '../constants/animations'
 
 const RISK_COLORS = { High: '#E74C3C', Medium: '#F5B041', Low: '#2ECC71' }
 const RISK_BG     = { High: '#FDEDEC', Medium: '#FEF9E7', Low: '#EAFAF1' }
@@ -86,12 +85,13 @@ export default function ExecutiveSummary() {
     }
   }
 
-  if (!data) return <div style={{ padding: 32, fontSize: '0.8rem', color: 'var(--c-text-2)' }}>Loading…</div>
+  if (!data) return <LoadingSkeleton variant="exec" />
 
   const { totalSamples, predictedPass, predictedFail, avgConfidence,
-          passRate, failRate, riskSummary, topRisks, parameterImpact, auditRecommendation, bottomStats } = data
+          passRate, failRate, riskSummary, topRisks, parameterImpact, auditRecommendation } = data
 
-  const derivedBottomStats = [
+  // Field bottomStats is never present in API response — use derived values directly (M7)
+  const bottomStatsToUse = [
     { label: "Samples Analyzed",   value: totalSamples.toLocaleString(), sub: "Selected period" },
     { label: "Compliance Rate",    value: `${passRate}%`, sub: "Predicted PASS" },
     { label: "Critical Failures",  value: (riskSummary?.high || 0).toLocaleString(), sub: "High risk — urgent" },
@@ -99,7 +99,6 @@ export default function ExecutiveSummary() {
     { label: "Top Risk Parameter", value: parameterImpact?.[0]?.parameter || "Moisture", sub: `SHAP value` },
     { label: "Batch Flag",         value: batch && batch !== "All Batches" ? batch : "Multiple Batches", sub: "Active batch filter" }
   ]
-  const bottomStatsToUse = bottomStats || derivedBottomStats
 
   return (
     <motion.div {...fadeIn}>

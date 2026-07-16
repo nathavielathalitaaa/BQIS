@@ -2,6 +2,8 @@
  * Header — page breadcrumb + title + subtitle
  * Matches Streamlit: breadcrumb(0.75rem/muted), page-title(1.4rem/navy/700), page-subtitle(0.8rem/muted)
  */
+import PropTypes from 'prop-types'
+
 export default function Header({ breadcrumbs = [], title, subtitle }) {
   return (
     <div className="page-header">
@@ -19,4 +21,15 @@ export default function Header({ breadcrumbs = [], title, subtitle }) {
       {subtitle && <div className="page-subtitle">{subtitle}</div>}
     </div>
   )
+}
+
+Header.propTypes = {
+  breadcrumbs: PropTypes.arrayOf(PropTypes.string),
+  title: PropTypes.string.isRequired,
+  subtitle: PropTypes.string,
+}
+
+Header.defaultProps = {
+  breadcrumbs: [],
+  subtitle: '',
 }

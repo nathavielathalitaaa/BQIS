@@ -32,6 +32,10 @@ st.set_page_config(
 # ══════════════════════════════════════════════════════════════════════════════
 # CONSTANTS & CONFIG
 # ══════════════════════════════════════════════════════════════════════════════
+# Risk classification thresholds (DRY — synced with backend/main.py)
+RISK_THRESHOLD_HIGH = 0.80
+RISK_THRESHOLD_MEDIUM = 0.60
+
 BUNDLE_PATH  = "v4_model_audit/bqis_model_bundle.pkl"
 DATASET_PATH = "data/bqis_biscuit_quality_dataset.csv"
 CLUSTER_PATH = "v2_feature_selection/bqis_clustering_result_v2.csv"
@@ -220,7 +224,11 @@ hr {{ border-color: #E0E0E5 !important; margin: 1.5rem 0 !important; }}
 
 @st.cache_resource(show_spinner=False)
 def load_bundle() -> dict:
-    return joblib.load(BUNDLE_PATH)
+    try:
+        return joblib.load(BUNDLE_PATH)
+    except Exception as e:
+        st.error(f"Failed to load model bundle from '{BUNDLE_PATH}': {e}")
+        st.stop()
 
 
 @st.cache_data(show_spinner=False)
@@ -249,8 +257,8 @@ def load_and_predict_all() -> tuple:
 
     def _risk(row):
         if row["Prediction"] == "PASS": return "Pass"
-        elif row["Prob_Fail"] >= 0.80: return "High Risk"
-        elif row["Prob_Fail"] >= 0.60: return "Medium Risk"
+        elif row["Prob_Fail"] >= RISK_THRESHOLD_HIGH: return "High Risk"
+        elif row["Prob_Fail"] >= RISK_THRESHOLD_MEDIUM: return "Medium Risk"
         return "Low Risk"
 
     ds["Risk_Level"] = ds.apply(_risk, axis=1)
@@ -278,7 +286,7 @@ def compute_global_shap() -> pd.DataFrame:
     total = shap_df["mean_abs"].sum()
     shap_df["label"]        = shap_df["feature"].map(FEATURE_LABELS).fillna(shap_df["feature"])
     shap_df["relative_pct"] = (shap_df["mean_abs"] / total * 100).round(1)
-    shap_df["direction"]    = shap_df["mean_signed"].apply(lambda v: "Positve" if v > 0 else "Negative")
+    shap_df["direction"]    = shap_df["mean_signed"].apply(lambda v: "Positive" if v > 0 else "Negative")
     return shap_df
 
 
@@ -329,8 +337,26 @@ def render_filter_bar(ds: pd.DataFrame, with_button_label: str = "Apply Filters"
     with st.container():
         st.markdown('<div class="filter-strip"><div class="filter-label">FILTERS</div>', unsafe_allow_html=True)
         fc1, fc2, fc3, fc4 = st.columns([1.5, 1.5, 1.5, 1.2])
+
+        # 1.8 — Period options derived dynamically from Test_Date (fallback to static if missing)
+        period_options = ["All Time"]
+        if "Test_Date" in ds.columns:
+            try:
+                pd_periods = (
+                    pd.to_datetime(ds["Test_Date"], errors="coerce")
+                    .dt.to_period("M").dropna()
+                    .unique()
+                )
+                period_options = ["All Time"] + sorted(
+                    [p.to_timestamp().strftime("%B %Y") for p in pd_periods], reverse=True
+                )
+            except Exception:
+                period_options = ["June 2026", "May 2026", "All Time"]
+        else:
+            period_options = ["June 2026", "May 2026", "All Time"]
+
         with fc1:
-            period = st.selectbox("Analysis Period", ["June 2026", "May 2026", "All Time"], key="f_per", label_visibility="collapsed")
+            period = st.selectbox("Analysis Period", period_options, key="f_per", label_visibility="collapsed")
         with fc2:
             batch = st.selectbox("Laboratory Batch", ["BCH-07-003", "BCH-07-001", "All Batches"], key="f_bat", label_visibility="collapsed")
         with fc3:
@@ -338,6 +364,14 @@ def render_filter_bar(ds: pd.DataFrame, with_button_label: str = "Apply Filters"
         with fc4:
             st.button(with_button_label, type="primary", use_container_width=True)
         st.markdown('</div>', unsafe_allow_html=True)
+
+    # 1.7 — Filter bar is currently a structural demo; warn user that data is not actually filtered
+    st.warning(
+        "⚠ Filter bar is for demonstration only — applying filters does NOT change the "
+        "displayed data in this Streamlit prototype. Connect to the FastAPI backend "
+        "(/api/filters/options) for live filtering.",
+        icon="⚠️",
+    )
     return ds.copy() # In a real app, apply filters. Returning copy for structural demo.
 
 

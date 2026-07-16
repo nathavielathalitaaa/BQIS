@@ -7,6 +7,7 @@ import {
   BarChart, Bar, XAxis, YAxis, Tooltip,
   ResponsiveContainer, Cell, LabelList,
 } from 'recharts'
+import PropTypes from 'prop-types'
 
 const CustomTooltip = ({ active, payload }) => {
   if (!active || !payload?.length) return null
@@ -73,4 +74,17 @@ export default function ShapChart({ data, height = 380 }) {
       </BarChart>
     </ResponsiveContainer>
   )
+}
+
+ShapChart.propTypes = {
+  data: PropTypes.arrayOf(PropTypes.shape({
+    label: PropTypes.string.isRequired,
+    meanAbs: PropTypes.number.isRequired,
+    relativePct: PropTypes.number,
+  })).isRequired,
+  height: PropTypes.number,
+}
+
+ShapChart.defaultProps = {
+  height: 380,
 }

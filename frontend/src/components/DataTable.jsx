@@ -2,6 +2,8 @@
  * DataTable — Reusable enterprise table component
  * Supports alternating rows, bold headers, centered numeric columns
  */
+import PropTypes from 'prop-types'
+
 export default function DataTable({ columns, rows }) {
   return (
     <div style={{ overflowX: 'auto' }}>
@@ -39,4 +41,15 @@ export default function DataTable({ columns, rows }) {
       </table>
     </div>
   )
+}
+
+DataTable.propTypes = {
+  columns: PropTypes.arrayOf(PropTypes.shape({
+    key: PropTypes.string.isRequired,
+    label: PropTypes.string.isRequired,
+    center: PropTypes.bool,
+    width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    render: PropTypes.func,
+  })).isRequired,
+  rows: PropTypes.arrayOf(PropTypes.object).isRequired,
 }

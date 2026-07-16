@@ -7,12 +7,7 @@ import DonutChart from '../components/DonutChart'
 import ScatterPlotChart from '../components/ScatterPlotChart'
 import ShapChart from '../components/ShapChart'
 import FilterBar from '../components/FilterBar'
-
-const fadeIn = {
-  initial: { opacity: 0, y: 8 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.2 },
-}
+import { fadeIn, LoadingSkeleton } from '../constants/animations'
 
 const aiExplanationsStatic = [
   {
@@ -93,9 +88,7 @@ export default function Dashboard() {
     }
   }
 
-  if (!data) return (
-    <div style={{ padding: 32, fontSize: '0.8rem', color: 'var(--c-text-2)' }}>Loading…</div>
-  )
+  if (!data) return <LoadingSkeleton variant="dashboard" />
 
   const { totalSamples, predictedPass, predictedFail, highRiskSamples,
           avgConfidence, riskDistribution, topShap, scatterPoints } = data

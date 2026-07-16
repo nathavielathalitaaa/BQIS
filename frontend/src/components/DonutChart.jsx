@@ -6,6 +6,7 @@
 import {
   PieChart, Pie, Cell, Tooltip, ResponsiveContainer,
 } from 'recharts'
+import PropTypes from 'prop-types'
 
 const RADIAN = Math.PI / 180
 
@@ -91,4 +92,19 @@ export default function DonutChart({ data, centerLabel, centerSub }) {
       </div>
     </div>
   )
+}
+
+DonutChart.propTypes = {
+  data: PropTypes.arrayOf(PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    value: PropTypes.number.isRequired,
+    color: PropTypes.string.isRequired,
+  })).isRequired,
+  centerLabel: PropTypes.string,
+  centerSub: PropTypes.string,
+}
+
+DonutChart.defaultProps = {
+  centerLabel: '',
+  centerSub: '',
 }

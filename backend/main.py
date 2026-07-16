@@ -1,5 +1,6 @@
 import os
 import io
+import logging
 import joblib
 import pandas as pd
 import numpy as np
@@ -7,11 +8,25 @@ import xgboost as xgb
 from fastapi import FastAPI, File, UploadFile, Query
 from fastapi.responses import Response
 from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
 from sklearn.decomposition import PCA
 from datetime import datetime
 from fpdf import FPDF
 
-app = FastAPI(title="BQIS Backend API", version="1.1.0")
+logger = logging.getLogger("bqis")
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
+
+# Risk classification thresholds (synced with app.py)
+RISK_THRESHOLD_HIGH = 0.80
+RISK_THRESHOLD_MEDIUM = 0.60
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Application lifespan: load dataset into memory on startup (replaces deprecated @app.on_event)."""
+    load_data()
+    yield
+
+app = FastAPI(title="BQIS Backend API", version="1.1.0", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -44,7 +59,9 @@ FEATURE_LABELS = {
     "Total_Plate_Count_CFUg": "Total Plate Count",
     "Yeast_Mold_Count_CFUg":  "Yeast & Mold Count",
     "Lead_Pb_mgkg":           "Lead (Pb)",
-    "Cadmium_Cd_mgkg":        "Cadmium (Cd)"
+    "Cadmium_Cd_mgkg":        "Cadmium (Cd)",
+    "pH":                     "pH",
+    "Salt_Content":           "Salt Content"
 }
 
 def process_dataset(raw_df: pd.DataFrame):
@@ -92,8 +109,8 @@ def process_dataset(raw_df: pd.DataFrame):
 
     def _risk(row):
         if row["Prediction"] == "PASS": return "Pass"
-        elif row["Prob_Fail"] >= 0.80: return "High Risk"
-        elif row["Prob_Fail"] >= 0.60: return "Medium Risk"
+        elif row["Prob_Fail"] >= RISK_THRESHOLD_HIGH: return "High Risk"
+        elif row["Prob_Fail"] >= RISK_THRESHOLD_MEDIUM: return "Medium Risk"
         return "Low Risk"
 
     ds["Risk_Level"] = ds.apply(_risk, axis=1)
@@ -134,7 +151,8 @@ def process_dataset(raw_df: pd.DataFrame):
             on="Sample_ID", how="left"
         )
         pca_df["Failure_Category_Original"] = pca_df["Failure_Category_Original"].fillna("Pass")
-    except Exception:
+    except Exception as e:
+        logger.warning("Cluster merge failed (%s) — falling back to dummy categories", e)
         # If new samples don't map to original clustering, assign dummy categories based on risk
         def mock_cat(row):
             if row["Prediction"] == "PASS": return "Pass"
@@ -158,10 +176,6 @@ def load_data():
     raw = pd.read_csv(DATASET_PATH)
     process_dataset(raw)
 
-@app.on_event("startup")
-def startup_event():
-    load_data()
-
 def apply_filters(ds, pca_df, period: str = None, batch: str = None, product: str = None):
     """
     Filter dataset berdasarkan period (Test_Date), batch, dan product.
@@ -183,8 +197,8 @@ def apply_filters(ds, pca_df, period: str = None, batch: str = None, product: st
                 f_ds = f_ds[mask]
                 # Sinkronkan pca_df menggunakan index yang tersisa
                 f_pca = f_pca[f_pca.index.isin(f_ds.index)]
-            except Exception:
-                pass  # Period string tidak valid — abaikan filter
+            except Exception as e:
+                logger.warning("Period filter parse failed for '%s' (%s) — ignoring filter", period, e)
 
     if batch and batch != "All Batches" and "Batch_Code" in f_ds.columns:
         f_ds = f_ds[f_ds["Batch_Code"] == batch]
@@ -397,52 +411,267 @@ async def upload_dataset(file: UploadFile = File(...)):
     process_dataset(df)
     return {"message": "Dataset uploaded and processed successfully", "samples": len(df)}
 
+# ══════════════════════════════════════════════════════════════════════════════
+# PDF HELPERS (shared by audit & executive report generators)
+# ══════════════════════════════════════════════════════════════════════════════
+
+NAVY = (0, 32, 91)        # TÜV NORD blue
+RED = (231, 76, 60)
+YELLOW = (245, 176, 65)
+GREEN = (46, 204, 113)
+LIGHT = (248, 249, 250)
+GREY = (127, 140, 141)
+DARK = (51, 51, 51)
+
+
+class BQISReport(FPDF):
+    """Custom FPDF subclass with BQIS branded header/footer and helpers."""
+
+    def __init__(self, title: str = "BQIS Audit Report"):
+        super().__init__(orientation="P", unit="mm", format="A4")
+        self.title = title
+        self.set_auto_page_break(auto=True, margin=18)
+        self.set_margins(15, 15, 15)
+        self.alias_nb_pages()
+
+    def header(self):
+        if self.page_no() == 1:
+            return  # Cover page has its own layout
+        self.set_font("Arial", "B", 10)
+        self.set_text_color(*NAVY)
+        self.cell(0, 8, "BQIS Audit Report", align="L")
+        self.set_font("Arial", "", 9)
+        self.set_text_color(*GREY)
+        self.cell(0, 8, f"Page {self.page_no()}/{{nb}}", align="R")
+        self.ln(10)
+        self.set_draw_color(*NAVY)
+        self.set_line_width(0.4)
+        self.line(15, self.get_y(), 195, self.get_y())
+        self.ln(4)
+
+    def footer(self):
+        if self.page_no() == 1:
+            return
+        self.set_y(-15)
+        self.set_font("Arial", "", 8)
+        self.set_text_color(*GREY)
+        self.cell(0, 8, f"BQIS -- TÜV NORD  |  Generated: {datetime.now().strftime('%Y-%m-%d %H:%M')}", align="C")
+
+    def h1(self, text):
+        self.set_font("Arial", "B", 16)
+        self.set_text_color(*NAVY)
+        self.cell(0, 10, text, ln=1)
+        self.ln(2)
+
+    def h2(self, text):
+        self.set_font("Arial", "B", 14)
+        self.set_text_color(*DARK)
+        self.cell(0, 9, text, ln=1)
+        self.ln(1)
+
+    def _cover(self, subtitle: str, period: str, batch: str, product: str):
+        self.add_page()
+        self.set_fill_color(*NAVY)
+        self.rect(0, 0, 210, 60, "F")
+        self.set_xy(15, 18)
+        self.set_font("Arial", "B", 30)
+        self.set_text_color(255, 255, 255)
+        self.cell(0, 14, "BQIS", ln=1)
+        self.set_x(15)
+        self.set_font("Arial", "B", 14)
+        self.cell(0, 8, "TÜV NORD", ln=1)
+        self.ln(20)
+        self.set_text_color(*NAVY)
+        self.set_font("Arial", "B", 22)
+        self.cell(0, 12, self.title, ln=1, align="C")
+        self.set_font("Arial", "", 12)
+        self.set_text_color(*GREY)
+        self.cell(0, 8, subtitle, ln=1, align="C")
+        self.ln(12)
+        # Filter info box
+        self.set_x(35)
+        self.set_fill_color(*LIGHT)
+        self.set_draw_color(*NAVY)
+        self.set_line_width(0.3)
+        box_w = 140
+        self.multi_cell(box_w, 8,
+            f"Generated : {datetime.now().strftime('%Y-%m-%d %H:%M')}\n"
+            f"Period    : {period or 'All Time'}\n"
+            f"Batch     : {batch or 'All'}\n"
+            f"Product   : {product or 'All'}\n"
+            f"Standard  : SNI 2973:2022",
+            border=1, align="L", fill=True)
+
+    def _table(self, headers, rows, col_widths, aligns=None, row_colors=None):
+        """Render a bordered table with header row in navy."""
+        aligns = aligns or ["L"] * len(headers)
+        line_h = 7
+        # Header
+        self.set_font("Arial", "B", 10)
+        self.set_fill_color(*NAVY)
+        self.set_text_color(255, 255, 255)
+        self.set_draw_color(200, 200, 200)
+        self.set_line_width(0.2)
+        for i, h in enumerate(headers):
+            self.cell(col_widths[i], line_h, h, border=1, align="C", fill=True)
+        self.ln(line_h)
+        # Body
+        self.set_font("Arial", "", 10)
+        self.set_text_color(*DARK)
+        for r_idx, row in enumerate(rows):
+            fill = False
+            if row_colors and r_idx < len(row_colors) and row_colors[r_idx]:
+                self.set_fill_color(*row_colors[r_idx])
+                fill = True
+            for i, cell in enumerate(row):
+                self.cell(col_widths[i], line_h, str(cell), border=1, align=aligns[i], fill=fill)
+            self.ln(line_h)
+
+
 @app.get("/api/report/audit")
 def generate_audit_report(period: str = None, batch: str = None, product: str = None):
     f_ds, _ = apply_filters(global_ds, global_pca_df, period, batch, product)
     stats = get_stats(f_ds)
-    
-    pdf = FPDF()
+    total = max(1, stats["total"])
+
+    pdf = BQISReport(title="AUDIT REPORT")
+    pdf._cover("Biscuit Quality Intelligence System", period, batch, product)
+
+    # ── 1. EXECUTIVE SUMMARY ──
     pdf.add_page()
-    pdf.set_font("Arial", 'B', 16)
-    pdf.cell(0, 10, "BQIS Audit Report", ln=True, align="C")
-    
-    pdf.set_font("Arial", '', 12)
-    pdf.cell(0, 10, f"Date generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", ln=True)
-    pdf.cell(0, 10, f"Filters - Period: {period or 'All'}, Batch: {batch or 'All'}, Product: {product or 'All'}", ln=True)
-    pdf.line(10, pdf.get_y(), 200, pdf.get_y())
-    pdf.ln(5)
-    
-    pdf.set_font("Arial", 'B', 14)
-    pdf.cell(0, 10, "Summary Statistics", ln=True)
-    pdf.set_font("Arial", '', 12)
-    pdf.cell(0, 10, f"Total Samples Analyzed: {stats['total']}", ln=True)
-    pdf.cell(0, 10, f"Predicted Pass: {stats['n_pass']} ({(stats['n_pass']/max(1,stats['total']))*100:.1f}%)", ln=True)
-    pdf.cell(0, 10, f"Predicted Fail: {stats['n_fail']} ({(stats['n_fail']/max(1,stats['total']))*100:.1f}%)", ln=True)
-    pdf.cell(0, 10, f"High Risk Samples Requiring Auditor Review: {stats['n_high']}", ln=True)
-    
+    pdf.h1("1. Executive Summary")
+    pdf._table(
+        ["Metric", "Value", "Notes"],
+        [
+            ["Total Samples", f"{stats['total']:,}", "All time"],
+            ["Predicted PASS", f"{stats['n_pass']:,}", f"{stats['n_pass']/total*100:.1f}%"],
+            ["Predicted FAIL", f"{stats['n_fail']:,}", f"{stats['n_fail']/total*100:.1f}%"],
+            ["High Risk", f"{stats['n_high']:,}", "Auditor review"],
+            ["Avg Confidence", f"{stats['avg_c']:.1f}%", "XGBoost accuracy"],
+        ],
+        [60, 50, 80], aligns=["L", "C", "L"]
+    )
+    pdf.ln(6)
+
+    # ── 2. RISK DISTRIBUTION ──
+    pdf.h2("2. Risk Distribution")
+    pdf._table(
+        ["Level", "Samples", "%", "Action"],
+        [
+            ["Pass", f"{stats['n_pass']:,}", f"{stats['n_pass']/total*100:.1f}%", "Clear"],
+            ["High Risk", f"{stats['n_high']:,}", f"{stats['n_high']/total*100:.1f}%", "URGENT"],
+            ["Medium Risk", f"{stats['n_med']:,}", f"{stats['n_med']/total*100:.1f}%", "HIGH"],
+            ["Low Risk", f"{stats['n_low']:,}", f"{stats['n_low']/total*100:.1f}%", "NORMAL"],
+        ],
+        [45, 40, 35, 70],
+        aligns=["L", "C", "C", "L"],
+        row_colors=[None, RED, YELLOW, GREEN],
+    )
+    pdf.ln(6)
+
+    # ── 3. TOP SHAP PARAMETERS ──
+    pdf.h2("3. Top SHAP Parameters")
+    top = global_shap_df.head(8)
+    total_shap = top["mean_abs"].sum() or 1
+    pdf._table(
+        ["Parameter", "SHAP Val", "Influence"],
+        [[r["label"], f"{r['mean_abs']:.4f}", f"{r['mean_abs']/total_shap*100:.1f}%"] for _, r in top.iterrows()],
+        [90, 40, 40], aligns=["L", "C", "C"]
+    )
+    pdf.ln(6)
+
+    # ── 4. CLUSTER PROFILES ──
+    pdf.h2("4. Cluster Profiles")
+    cat_counts = f_ds  # placeholder; use pca-based counts from global
+    # Recompute cluster counts from filtered pca
+    f_pca = apply_filters(global_ds, global_pca_df, period, batch, product)[1]
+    cc = f_pca[f_pca["Failure_Category_Original"] != "Pass"]["Failure_Category_Original"].value_counts()
+    cluster_rows = [
+        ["Microbiological", f"{int(cc.get('Microbiological', 0))}", "High", "Reinspect"],
+        ["Physicochemical", f"{int(cc.get('Physicochemical', 0))}", "High", "Halt cert"],
+        ["Heavy Metal", f"{int(cc.get('Heavy_Metal', 0))}", "High", "Audit"],
+        ["Stability", f"{int(cc.get('Stability', 0))}", "Med", "Retest"],
+    ]
+    pdf._table(
+        ["Cluster", "Samples", "Risk", "Action"],
+        cluster_rows, [60, 40, 35, 55], aligns=["L", "C", "C", "L"],
+        row_colors=[RED, RED, RED, YELLOW],
+    )
+    pdf.ln(6)
+
+    # ── 5. AUDIT RECOMMENDATION ──
+    pdf.h2("5. Audit Recommendation")
+    pdf.set_fill_color(*RED)
+    pdf.set_draw_color(*RED)
+    pdf.set_text_color(192, 57, 43)
+    pdf.set_font("Arial", "B", 11)
+    pdf.multi_cell(0, 8,
+        f"High risk alerts detected for {stats['n_high']} samples. Immediate quarantine recommended.",
+        border=1, align="L", fill=True)
+
     pdf_content = bytes(pdf.output(dest='S'))
     return Response(content=pdf_content, media_type="application/pdf", headers={"Content-Disposition": "attachment; filename=audit_report.pdf"})
 
 @app.get("/api/report/executive")
 def generate_exec_summary(period: str = None, batch: str = None, product: str = None):
-    f_ds, _ = apply_filters(global_ds, global_pca_df, period, batch, product)
+    f_ds, f_pca = apply_filters(global_ds, global_pca_df, period, batch, product)
     stats = get_stats(f_ds)
-    
-    pdf = FPDF()
+    total = max(1, stats["total"])
+
+    pdf = BQISReport(title="EXECUTIVE SUMMARY")
+    pdf._cover("Biscuit Quality Intelligence System", period, batch, product)
+
+    # ── KEY FINDINGS ──
     pdf.add_page()
-    pdf.set_font("Arial", 'B', 16)
-    pdf.cell(0, 10, "BQIS Executive Summary", ln=True, align="C")
-    
-    pdf.set_font("Arial", '', 12)
-    pdf.cell(0, 10, f"Date generated: {datetime.now().strftime('%Y-%m-%d')}", ln=True)
-    pdf.line(10, pdf.get_y(), 200, pdf.get_y())
-    pdf.ln(5)
-    
-    pdf.set_font("Arial", 'B', 12)
-    pdf.cell(0, 10, "Key Findings:", ln=True)
-    pdf.set_font("Arial", '', 12)
-    pdf.multi_cell(0, 10, f"The AI engine processed {stats['total']} samples. {stats['n_high']} samples were flagged as HIGH RISK and require immediate quarantine or inspection.")
-    
+    pdf.h1("Key Findings")
+    pdf.set_font("Arial", "", 11)
+    pdf.set_text_color(*DARK)
+    pdf.multi_cell(0, 7,
+        f"The AI engine processed {stats['total']:,} samples. "
+        f"{stats['n_high']:,} samples were flagged as HIGH RISK and require immediate "
+        f"quarantine or inspection.", border=0, align="L")
+    pdf.ln(4)
+
+    # ── RISK BREAKDOWN ──
+    pdf.h2("Risk Breakdown")
+    pdf._table(
+        ["Level", "Samples"],
+        [
+            ["High Risk", f"{stats['n_high']:,}"],
+            ["Medium Risk", f"{stats['n_med']:,}"],
+            ["Low Risk", f"{stats['n_low']:,}"],
+            ["Pass", f"{stats['n_pass']:,}"],
+        ],
+        [80, 60], aligns=["L", "C"],
+        row_colors=[RED, YELLOW, GREEN, None],
+    )
+    pdf.ln(6)
+
+    # ── TOP RISK CATEGORIES ──
+    pdf.h2("Top Risk Categories")
+    cc = f_pca[f_pca["Failure_Category_Original"] != "Pass"]["Failure_Category_Original"].value_counts()
+    pdf._table(
+        ["Category", "Samples", "Risk"],
+        [
+            ["Microbiological", f"{int(cc.get('Microbiological', 0))}", "High"],
+            ["Physicochemical", f"{int(cc.get('Physicochemical', 0))}", "High"],
+            ["Heavy Metal", f"{int(cc.get('Heavy_Metal', 0))}", "High"],
+            ["Moisture / Stability", f"{int(cc.get('Stability', 0))}", "Med"],
+        ],
+        [90, 40, 40], aligns=["L", "C", "C"],
+        row_colors=[RED, RED, RED, YELLOW],
+    )
+    pdf.ln(6)
+
+    # ── AUDIT RECOMMENDATION ──
+    pdf.h2("Audit Recommendation")
+    pdf.set_fill_color(*RED)
+    pdf.set_draw_color(*RED)
+    pdf.set_text_color(192, 57, 43)
+    pdf.set_font("Arial", "B", 11)
+    pdf.multi_cell(0, 8,
+        f"High risk alerts detected for {stats['n_high']} samples. Immediate quarantine recommended for flagged batches.",
+        border=1, align="L", fill=True)
+
     pdf_content = bytes(pdf.output(dest='S'))
     return Response(content=pdf_content, media_type="application/pdf", headers={"Content-Disposition": "attachment; filename=executive_summary.pdf"})

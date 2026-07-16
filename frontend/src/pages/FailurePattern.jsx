@@ -11,8 +11,7 @@ import StatCard          from '../components/StatCard'
 import FilterBar         from '../components/FilterBar'
 import ScatterPlotChart  from '../components/ScatterPlotChart'
 import { FAILURE_COLORS } from '../constants/colors'
-
-const fadeIn = { initial: { opacity: 0, y: 8 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.2 } }
+import { fadeIn, LoadingSkeleton } from '../constants/animations'
 
 const RISK_BADGE = {
   High:   'badge badge-high',
@@ -71,6 +70,8 @@ export default function FailurePattern() {
 
   const loadData = () => {
     setIsLoading(true)
+    // Reset stale selected cluster before fetching new data (M6)
+    setSelected(null)
     fetchClusters({ period, batch, product })
       .then(r => {
         const enrichedProfiles = (r.data.clusterProfiles || []).map(p => {
@@ -113,7 +114,7 @@ export default function FailurePattern() {
     loadData()
   }, [])
 
-  if (!data) return <div style={{ padding: 32, fontSize: '0.8rem', color: 'var(--c-text-2)' }}>Loading…</div>
+  if (!data) return <LoadingSkeleton variant="failure" />
 
   const { totalClusters, dominantCluster, highRiskClusters, affectedSamples,
           clusterProfiles, scatterPoints, varExp, bottomKpis } = data

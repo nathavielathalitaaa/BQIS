@@ -10,8 +10,7 @@ import StatCard  from '../components/StatCard'
 import FilterBar from '../components/FilterBar'
 import DonutChart from '../components/DonutChart'
 import DataTable from '../components/DataTable'
-
-const fadeIn = { initial: { opacity: 0, y: 8 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.2 } }
+import { fadeIn, LoadingSkeleton } from '../constants/animations'
 
 const RISK_COLOR = {
   'Pass':        '#2ECC71',
@@ -44,7 +43,7 @@ export default function SampleRiskOverview() {
     loadData()
   }, [])
 
-  if (!data) return <div style={{ padding: 32, fontSize: '0.8rem', color: 'var(--c-text-2)' }}>Loading…</div>
+  if (!data) return <LoadingSkeleton variant="risk" />
 
   const { totalSamples, predictedPass, predictedFail, highRisk,
           avgConfidence, riskDistribution, riskTable, recentSamples } = data

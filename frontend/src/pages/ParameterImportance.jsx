@@ -11,8 +11,7 @@ import StatCard  from '../components/StatCard'
 import FilterBar from '../components/FilterBar'
 import ShapChart from '../components/ShapChart'
 import DataTable from '../components/DataTable'
-
-const fadeIn = { initial: { opacity: 0, y: 8 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.2 } }
+import { fadeIn, LoadingSkeleton } from '../constants/animations'
 
 export default function ParameterImportance() {
   const [data, setData] = useState(null)
@@ -38,7 +37,7 @@ export default function ParameterImportance() {
     loadData()
   }, [])
 
-  if (!data) return <div style={{ padding: 32, fontSize: '0.8rem', color: 'var(--c-text-2)' }}>Loading…</div>
+  if (!data) return <LoadingSkeleton variant="param" />
 
   const { paramCount, affectedSamples, parameters } = data
   const sorted = [...parameters].sort((a, b) => b.meanAbs - a.meanAbs)

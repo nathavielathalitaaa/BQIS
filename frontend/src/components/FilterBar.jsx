@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { fetchFilterOptions } from '../services/api'
+import PropTypes from 'prop-types'
 
 /**
  * FilterBar — Streamlit .filter-strip replication
@@ -85,4 +86,19 @@ export default function FilterBar({
       </button>
     </div>
   )
+}
+
+FilterBar.propTypes = {
+  period: PropTypes.string.isRequired,
+  batch: PropTypes.string.isRequired,
+  product: PropTypes.string.isRequired,
+  onPeriodChange: PropTypes.func.isRequired,
+  onBatchChange: PropTypes.func.isRequired,
+  onProductChange: PropTypes.func.isRequired,
+  onApply: PropTypes.func.isRequired,
+  buttonLabel: PropTypes.string,
+}
+
+FilterBar.defaultProps = {
+  buttonLabel: 'Apply Filters',
 }

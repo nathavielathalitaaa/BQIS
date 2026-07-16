@@ -14,6 +14,7 @@ import {
   ReferenceLine,
 } from 'recharts'
 import { FAILURE_COLORS, FAILURE_LABELS } from '../constants/colors'
+import PropTypes from 'prop-types'
 
 // Aliases for local use
 const CLUSTER_COLORS = FAILURE_COLORS
@@ -106,4 +107,20 @@ export default function ScatterPlotChart({ points, varExp }) {
       </div>
     </div>
   )
+}
+
+ScatterPlotChart.propTypes = {
+  points: PropTypes.arrayOf(PropTypes.shape({
+    pc1: PropTypes.number.isRequired,
+    pc2: PropTypes.number.isRequired,
+    cluster: PropTypes.string.isRequired,
+  })).isRequired,
+  varExp: PropTypes.shape({
+    pc1: PropTypes.number,
+    pc2: PropTypes.number,
+  }),
+}
+
+ScatterPlotChart.defaultProps = {
+  varExp: undefined,
 }

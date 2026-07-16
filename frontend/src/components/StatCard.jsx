@@ -6,6 +6,7 @@
  * sub: 0.7rem / #777
  */
 import { motion } from 'framer-motion'
+import PropTypes from 'prop-types'
 
 export default function StatCard({ label, value, desc, accent }) {
   return (
@@ -24,4 +25,16 @@ export default function StatCard({ label, value, desc, accent }) {
       {desc && <div className="kpi-sub">{desc}</div>}
     </motion.div>
   )
+}
+
+StatCard.propTypes = {
+  label: PropTypes.string.isRequired,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  desc: PropTypes.string,
+  accent: PropTypes.string,
+}
+
+StatCard.defaultProps = {
+  desc: '',
+  accent: undefined,
 }
