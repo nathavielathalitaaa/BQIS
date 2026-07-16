@@ -5,6 +5,7 @@
 import { NavLink, useLocation } from 'react-router-dom'
 import {
   MdDashboard,
+  MdUploadFile,
   MdBiotech,
   MdMap,
   MdBarChart,
@@ -12,11 +13,12 @@ import {
 } from 'react-icons/md'
 
 const NAV_ITEMS = [
-  { to: '/',                     icon: MdDashboard, label: 'Dashboard' },
-  { to: '/sample-risk',          icon: MdBiotech,   label: 'Sample Risk Overview' },
-  { to: '/failure-pattern',      icon: MdMap,       label: 'Failure Pattern Map' },
-  { to: '/parameter-importance', icon: MdBarChart,  label: 'Parameter Importance' },
-  { to: '/executive-summary',    icon: MdArticle,   label: 'Executive Summary' },
+  { to: '/',                     icon: MdDashboard,  label: 'Dashboard' },
+  { to: '/data-input',           icon: MdUploadFile, label: 'Data Input' },
+  { to: '/sample-risk',          icon: MdBiotech,    label: 'Sample Risk Overview' },
+  { to: '/failure-pattern',      icon: MdMap,        label: 'Failure Pattern Map' },
+  { to: '/parameter-importance', icon: MdBarChart,   label: 'Parameter Importance' },
+  { to: '/executive-summary',    icon: MdArticle,    label: 'Executive Summary' },
 ]
 
 export default function Sidebar() {

@@ -64,3 +64,12 @@ export const fetchExecutiveSummary = (params) =>
 // ─── Download Report ──────────────────────────────────────────────────────────
 export const downloadReport = (type, params) =>
   api.get(`/report/${type}`, { params, responseType: 'blob' })
+
+// ─── Upload Dataset ────────────────────────────────────────────────────────────
+export const uploadDataset = (file) => {
+  const formData = new FormData()
+  formData.append('file', file)
+  return api.post('/upload', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  })
+}
