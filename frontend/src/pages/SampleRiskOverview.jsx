@@ -13,10 +13,11 @@ import DataTable from '../components/DataTable'
 import { fadeIn, LoadingSkeleton } from '../constants/animations'
 
 const RISK_COLOR = {
-  'Pass':        '#2ECC71',
-  'High Risk':   '#E74C3C',
-  'Medium Risk': '#F5B041',
-  'Low Risk':    '#82E0AA',
+  'Pass':                     '#2ECC71',
+  'High Risk':                '#E74C3C',
+  'Medium Risk':              '#F5B041',
+  'Low Risk':                 '#82E0AA',
+  'Excluded - Manual Review': '#95A5A6',   // neutral grey — not an AI result
 }
 
 export default function SampleRiskOverview() {
@@ -84,17 +85,38 @@ export default function SampleRiskOverview() {
     { key: 'product', label: 'Product' },
     {
       key: 'prediction', label: 'Prediction', center: true,
-      render: v => (
-        <span style={{ fontWeight: 700, color: v === 'PASS' ? '#2ECC71' : '#E74C3C' }}>{v}</span>
-      ),
+      render: v => {
+        if (v === 'N/A') return (
+          <span style={{
+            fontWeight: 600, color: '#95A5A6',
+            background: '#F0F3F4', borderRadius: 2, padding: '1px 6px',
+            fontSize: '0.72rem', letterSpacing: '0.3px',
+          }}>N/A</span>
+        )
+        return (
+          <span style={{ fontWeight: 700, color: v === 'PASS' ? '#2ECC71' : '#E74C3C' }}>{v}</span>
+        )
+      },
     },
     {
       key: 'risk', label: 'Risk Level',
-      render: v => <span style={{ color: RISK_COLOR[v] || '#111', fontWeight: 500 }}>{v}</span>,
+      render: v => {
+        if (v === 'Excluded - Manual Review') return (
+          <span style={{
+            display: 'inline-flex', alignItems: 'center', gap: 4,
+            color: '#717D7E', fontWeight: 600, fontSize: '0.72rem',
+            background: '#F2F3F4', border: '1px solid #D5D8DC',
+            borderRadius: 2, padding: '2px 7px',
+          }}>
+            <span style={{ fontSize: 10 }}>⚠</span> Manual Review
+          </span>
+        )
+        return <span style={{ color: RISK_COLOR[v] || '#111', fontWeight: 500 }}>{v}</span>
+      },
     },
     {
       key: 'confidence', label: 'Confidence', center: true,
-      render: v => `${v}%`,
+      render: v => v != null ? `${v}%` : <span style={{ color: '#BDC3C7' }}>—</span>,
     },
   ]
 

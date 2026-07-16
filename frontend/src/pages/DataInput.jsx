@@ -77,6 +77,60 @@ export default function DataInput() {
   }
 
   // ── Upload ────────────────────────────────────────────────────────────────
+  /**
+   * Extracts a human-readable error message from an Axios error.
+   * Handles all FastAPI error shapes:
+   *   - { detail: "string" }              → most common
+   *   - { detail: [{ msg, loc }] }        → Pydantic validation errors
+   *   - HTML response body (raw 500)      → strip tags, show fallback
+   *   - Network error (no response)       → connection message
+   */
+  const extractErrorMessage = (err) => {
+    const status = err?.response?.status
+    const data   = err?.response?.data
+
+    // ── No response at all (network down, CORS, timeout) ──────────────────
+    if (!err?.response) {
+      if (err?.code === 'ECONNABORTED') return 'Request timeout — server terlalu lama merespons. Coba lagi.'
+      return 'Tidak dapat terhubung ke server. Pastikan backend sudah berjalan.'
+    }
+
+    // ── Try to extract structured detail from JSON body ────────────────────
+    if (data && typeof data === 'object') {
+      const detail = data.detail
+
+      // FastAPI standard: detail is a plain string
+      if (typeof detail === 'string' && detail.trim()) {
+        return `[${status}] ${detail}`
+      }
+
+      // FastAPI Pydantic validation: detail is an array of error objects
+      if (Array.isArray(detail) && detail.length > 0) {
+        const msgs = detail.map((d) => {
+          const loc = d.loc ? d.loc.filter(l => l !== 'body').join(' → ') : ''
+          return loc ? `${loc}: ${d.msg}` : d.msg
+        })
+        return `[${status}] Validasi gagal:\n• ${msgs.join('\n• ')}`
+      }
+
+      // Fallback: stringify whatever object came back
+      if (data.message) return `[${status}] ${data.message}`
+    }
+
+    // ── HTML body (raw server error page) ─────────────────────────────────
+    if (typeof data === 'string' && data.trim().startsWith('<')) {
+      return `[${status}] Server error — lihat log backend untuk detail lebih lanjut.`
+    }
+
+    // ── Plain string body ──────────────────────────────────────────────────
+    if (typeof data === 'string' && data.trim()) {
+      return `[${status}] ${data.trim()}`
+    }
+
+    // ── Last resort: axios message ─────────────────────────────────────────
+    return `[${status ?? 'Error'}] ${err?.message ?? 'Upload gagal. Silakan coba lagi.'}`
+  }
+
   const handleUpload = async () => {
     if (!selectedFile || isUploading) return
 
@@ -86,17 +140,12 @@ export default function DataInput() {
 
     try {
       const response = await uploadDataset(selectedFile)
-      const { message, samples } = response.data
-      setResultMessage({ message, samples })
+      const { message, samples, quality_summary } = response.data
+      setResultMessage({ message, samples, quality_summary })
       setSelectedFile(null)
       if (fileInputRef.current) fileInputRef.current.value = ''
     } catch (err) {
-      const msg =
-        err?.response?.data?.detail ||
-        err?.response?.data?.message ||
-        err?.message ||
-        'Upload failed. Please try again.'
-      setErrorMessage(msg)
+      setErrorMessage(extractErrorMessage(err))
     } finally {
       setIsUploading(false)
     }
@@ -223,57 +272,130 @@ export default function DataInput() {
               role="alert"
               style={{
                 marginTop: 14,
-                padding: '10px 14px',
+                padding: '12px 16px',
                 background: '#FDEDEC',
                 border: '1px solid #F5B7B1',
                 borderRadius: 2,
-                fontSize: '0.8rem',
-                color: '#E74C3C',
-                fontWeight: 500,
+                display: 'flex',
+                gap: 10,
+                alignItems: 'flex-start',
               }}
             >
-              {errorMessage}
+              {/* Icon */}
+              <span style={{ fontSize: 18, color: '#E74C3C', flexShrink: 0, lineHeight: 1.4 }}>⚠</span>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontWeight: 700, fontSize: '0.82rem', color: '#C0392B', marginBottom: 4 }}>
+                  Upload Gagal
+                </div>
+                <div
+                  style={{
+                    fontSize: '0.78rem',
+                    color: '#C0392B',
+                    lineHeight: 1.65,
+                    whiteSpace: 'pre-line',   /* renders \n from Pydantic error lists */
+                  }}
+                >
+                  {errorMessage}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setErrorMessage(null)}
+                  style={{
+                    marginTop: 8,
+                    background: 'none',
+                    border: 'none',
+                    fontSize: '0.72rem',
+                    color: '#E74C3C',
+                    cursor: 'pointer',
+                    textDecoration: 'underline',
+                    padding: 0,
+                  }}
+                >
+                  Tutup
+                </button>
+              </div>
             </div>
           )}
 
-          {/* Success message */}
+
+          {/* ── Success message: 2-badge proposal-compliant display ──── */}
           {resultMessage && (
-            <div
-              role="status"
-              style={{
-                marginTop: 14,
-                padding: '14px 16px',
-                background: '#EAF8F0',
-                border: '1px solid #A9DFBF',
-                borderRadius: 2,
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 10,
-              }}
-            >
+            <div role="status" style={{ marginTop: 14, display: 'flex', flexDirection: 'column', gap: 10 }}>
+
+              {/* Title row */}
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <MdCheckCircle style={{ fontSize: 20, color: '#2ECC71', flexShrink: 0 }} />
                 <div style={{ fontWeight: 700, fontSize: '0.85rem', color: '#27AE60' }}>
-                  Upload Successful
+                  Upload Berhasil
+                </div>
+                <div style={{ fontSize: '0.75rem', color: '#888', marginLeft: 4 }}>
+                  {resultMessage.samples != null && `— ${resultMessage.samples} total baris diproses`}
                 </div>
               </div>
-              <div style={{ fontSize: '0.8rem', color: '#27AE60' }}>
-                {resultMessage.message
-                  ? resultMessage.message
-                  : `Dataset processed — ${resultMessage.samples ?? '?'} samples loaded.`}
-                {resultMessage.samples && resultMessage.message && (
-                  <span style={{ marginLeft: 6, fontWeight: 700 }}>
-                    ({resultMessage.samples} samples)
-                  </span>
-                )}
+
+              {/* Badge 1: AI Analyzed (always shown) */}
+              <div
+                style={{
+                  display: 'flex', alignItems: 'flex-start', gap: 10,
+                  padding: '10px 14px',
+                  background: '#EAF8F0',
+                  border: '1px solid #A9DFBF',
+                  borderRadius: 2,
+                }}
+              >
+                <span style={{ fontSize: 16, color: '#27AE60', flexShrink: 0, marginTop: 1 }}>✓</span>
+                <div style={{ fontSize: '0.8rem', color: '#1E8449', lineHeight: 1.6 }}>
+                  <strong>
+                    {resultMessage.quality_summary
+                      ? resultMessage.quality_summary.analyzed
+                      : (resultMessage.samples ?? '?')}
+                    {' '}Sample Dianalisis AI (KNN Imputed, ≤30% data hilang)
+                  </strong>
+                </div>
               </div>
+
+              {/* Badge 2: Excluded for Manual Review (only if excluded > 0) */}
+              {resultMessage.quality_summary?.excluded_manual_review > 0 && (
+                <div
+                  style={{
+                    display: 'flex', alignItems: 'flex-start', gap: 10,
+                    padding: '10px 14px',
+                    background: '#FEF9E7',
+                    border: '1px solid #F9E79F',
+                    borderRadius: 2,
+                  }}
+                >
+                  <span style={{ fontSize: 16, color: '#D68910', flexShrink: 0, marginTop: 1 }}>⚠</span>
+                  <div style={{ fontSize: '0.8rem', color: '#7D6608', lineHeight: 1.6 }}>
+                    <strong>
+                      {resultMessage.quality_summary.excluded_manual_review} Sample Dikecualikan dari AI
+                      {' '}— Perlu Review Manual (&gt;30% data hilang)
+                    </strong>
+                    <div
+                      style={{
+                        marginTop: 5,
+                        fontSize: '0.72rem',
+                        color: '#9A7D0A',
+                        fontStyle: 'italic',
+                        lineHeight: 1.55,
+                      }}
+                    >
+                      Sesuai standar BQIS: sample dengan data hilang lebih dari{' '}
+                      {resultMessage.quality_summary.threshold_pct ?? 30}% tidak diproses model AI
+                      {' '}dan wajib direview manual oleh auditor.
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Go to Dashboard button */}
               <button
                 type="button"
                 className="btn-primary"
                 style={{ width: 'fit-content', height: 34, padding: '0 18px', marginTop: 2 }}
                 onClick={() => navigate('/')}
               >
-                Go to Dashboard
+                Lihat Dashboard
               </button>
             </div>
           )}
