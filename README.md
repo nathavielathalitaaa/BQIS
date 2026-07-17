@@ -333,16 +333,6 @@ The backend optionally reads:
 
 If present, it can enrich the generated report narrative. If not present, the system still works using fallback text.
 
-## Competition-Ready Strengths
-
-- clear industrial use case
-- complete end-to-end workflow
-- explainable predictions, not just raw classification
-- strong separation between technical and executive outputs
-- polished dashboard demo value
-- practical missing-data handling
-- traceable experiment history in versioned folders
-
 ## Important Notes
 
 - The backend is stateful in memory and reloads on restart.
