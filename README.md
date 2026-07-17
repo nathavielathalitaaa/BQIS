@@ -26,16 +26,479 @@
 ---
 
 ## 1. Project Purpose
-
+BQIS is a biscuit quality audit dashboard and decision support system for certificate-style quality review under SNI 2973:2022. It combines a FastAPI backend, an XGBoost classifier, SHAP explainability, PCA-based failure clustering, PDF report generation, and a React dashboard for analysts, auditors, and management.
 BQIS is a **food quality audit intelligence dashboard** built for biscuit manufacturers
-undergoing certification under **SNI 2973:2022** (Indonesian National Standard for Biscuits),
+The project is designed for batch analysis, not real-time sensing. You upload or load a CSV dataset, the backend scores each sample, assigns a risk level, groups failures into failure categories, and serves summary data to the frontend.
 in collaboration with **TUV NORD** as the certification body.
+## What The System Does
 
-The system:
-- Accepts laboratory test CSV data (13 quality parameters per sample)
-- Runs an **XGBoost classifier** to predict PASS / FAIL per sample
-- Assigns a **risk level** (High / Medium / Low / Pass) based on failure probability
-- Clusters failures into 4 categories: **Microbiological, Physicochemical, Heavy Metal, Stability**
+BQIS takes biscuit laboratory data and turns it into a structured quality review workflow.
+
+It can:
+
+- classify each sample as PASS or FAIL
+- assign a risk level based on model probability
+- identify whether a failure appears microbiological, physicochemical, heavy-metal related, or stability related
+- summarize the dataset through dashboard KPIs and charts
+- generate an audit report for technical reviewers
+- generate an executive summary for non-technical stakeholders
+- accept a new CSV upload and reprocess the full analysis pipeline
+
+## High-Level Architecture
+
+The application is split into three practical layers:
+
+1. Data layer: CSV files in the data and versioned experiment folders.
+2. Backend layer: FastAPI app in backend/main.py.
+3. Frontend layer: React + Vite app in frontend/.
+
+The backend loads the reference dataset and model artifacts on startup, computes predictions and explanations in memory, and exposes JSON endpoints. The frontend consumes those endpoints through a single API service module.
+
+## Repository Layout
+
+```text
+BQIS/
+|-- app.py                         # Legacy Streamlit app, kept for reference
+|-- backend/
+|   |-- main.py                    # FastAPI app, model pipeline, reports
+|   |-- output.pdf                 # Example generated report artifact
+|   `-- venv/                      # Local environment if present
+|-- data/
+|   |-- bqis_biscuit_quality_dataset.csv
+|   `-- bqis_biscuit_quality_dataset_3000.csv
+|-- frontend/
+|   |-- package.json
+|   |-- vite.config.js
+|   |-- src/
+|   |   |-- App.jsx
+|   |   |-- main.jsx
+|   |   |-- index.css
+|   |   |-- components/
+|   |   |-- constants/
+|   |   |-- mock/
+|   |   |-- pages/
+|   |   `-- services/
+|   `-- public/
+|-- v1_baseline_full_features/
+|-- v2_feature_selection/
+|-- v3_robust_pipeline/
+|-- v4_model_audit/
+|-- v5_recalibration_sop/
+`-- generate_dataset.py
+```
+
+The current backend code expects two runtime artifacts:
+
+- v4_model_audit/bqis_model_bundle.pkl
+- v2_feature_selection/bqis_clustering_result_v2.csv
+
+If either file is missing, startup or downstream analysis will fail.
+
+## Tech Stack
+
+- Python
+- FastAPI
+- Uvicorn
+- Pandas and NumPy for data processing
+- scikit-learn for KNN imputation and PCA
+- XGBoost for binary classification
+- SHAP-style explainability via XGBoost contribution values
+- fpdf2 for PDF report generation
+- python-dotenv for environment loading
+- Google GenAI client for optional narrative generation
+
+### Frontend
+
+- React 19
+- Vite 8
+- react-router-dom 7
+- Axios for HTTP requests
+- Recharts for charts
+- Framer Motion for page motion and transitions
+- react-icons for navigation icons
+- Tailwind packages are installed, but the current UI styling is primarily in frontend/src/index.css
+
+## Data Contract
+
+The backend expects biscuit quality data to use exact, case-sensitive column names.
+
+### Required Numeric Columns
+
+These columns are used in the model pipeline and must be present or inferable in the uploaded CSV. If a column is missing entirely, the backend fills it with NaN and applies the missing-data policy.
+
+| Column | Meaning |
+|---|---|
+| Moisture_Content_% | Moisture content |
+| Fat_Content_% | Fat content |
+| Protein_Content_% | Protein content |
+| Water_Activity_Aw | Water activity |
+| Acid_Insoluble_Ash_% | Acid insoluble ash |
+| Acid_Value_mgKOHg | Acid value |
+| Peroxide_Value | Peroxide value |
+| Total_Plate_Count_CFUg | Total plate count |
+| Yeast_Mold_Count_CFUg | Yeast and mold count |
+| Lead_Pb_mgkg | Lead concentration |
+| Cadmium_Cd_mgkg | Cadmium concentration |
+
+### Required Categorical Column
+
+| Column | Meaning |
+|---|---|
+| Product_Name | Product type, one-hot encoded before model inference |
+
+### Optional Columns
+
+| Column | Default behavior if missing |
+|---|---|
+| Sample_ID | Auto-generated as UPL-0001, UPL-0002, and so on |
+| Batch_Code | Filled with BCH-UPLOADED |
+| Test_Date | Parsed if present; otherwise period filtering is disabled |
+
+## Missing Data Policy
+
+The backend uses a row-level missing data threshold of 30% across the required numeric parameters.
+
+- If a row has 30% or less missing values, it is kept and imputed with KNNImputer.
+- If a row has more than 30% missing values, it is excluded from model scoring and marked for manual review.
+
+Excluded rows receive:
+
+- Prediction = N/A
+- Risk_Level = Excluded - Manual Review
+- Probability fields set to NaN
+
+This is the core quality gate in the pipeline and should be preserved if the model is retrained or the dataset format changes.
+
+## Backend Behavior
+
+The backend entry point is backend/main.py.
+
+### Startup Flow
+
+When FastAPI starts, the lifespan hook calls load_data(). That function loads the baseline CSV from data/bqis_biscuit_quality_dataset.csv, processes it, computes model outputs, SHAP summaries, PCA coordinates, and cached chart data, and stores the results in module-level globals.
+
+The main in-memory objects are:
+
+- global_ds: processed dataset with predictions, risk levels, and data-quality flags
+- global_feat: feature matrix used for the model
+- global_bundle: loaded model bundle and feature column list
+- global_shap_df: global feature importance summary
+- global_pca_df: PCA coordinates plus failure category labels
+- global_cluster_df: reserved / unused in the current code
+
+Important detail: SHAP is computed once at startup and is not recomputed when filters change. Filtered views reuse the cached global SHAP ranking.
+
+### Processing Pipeline
+
+The main processing function follows a deterministic sequence:
+
+1. Ensure all required numeric columns exist.
+2. Auto-generate Sample_ID, Batch_Code, and Product_Name if needed.
+3. Compute each row’s missing-value percentage.
+4. Split the dataset into included and excluded rows using the 30% threshold.
+5. Apply KNN imputation to included rows.
+6. One-hot encode Product_Name and align the features with the model bundle.
+7. Run XGBoost predictions and probabilities.
+8. Assign PASS or FAIL.
+9. Convert failure probability into High Risk, Medium Risk, Low Risk, or Pass.
+10. Compute global feature importance from XGBoost contribution values.
+11. Fit PCA for a two-dimensional cluster map.
+12. Merge PCA results with the precomputed failure category CSV.
+13. Mark excluded rows for manual review.
+14. Restore original row order and derive Test_Date_dt for filtering.
+
+### Risk Logic
+
+The risk classification thresholds are:
+
+- High Risk: probability of failure at or above 0.80
+- Medium Risk: probability of failure at or above 0.60
+- Low Risk: anything below the medium threshold, if the prediction is FAIL
+- Pass: any sample predicted as PASS
+
+## API Endpoints
+
+All JSON endpoints live under /api and accept optional filter query parameters where applicable.
+
+### Shared Filter Parameters
+
+The following query parameters are supported by the dashboard-style endpoints:
+
+- period: string in the format January 2025, February 2025, and so on
+- batch: exact Batch_Code match
+- product: exact Product_Name match
+
+### GET /api/dashboard
+
+Returns the main dashboard payload:
+
+- total sample count
+- pass and fail counts
+- high-risk sample count
+- average confidence
+- pass and fail rates
+- risk distribution for the donut chart
+- top SHAP parameters
+- up to 200 PCA scatter points
+
+### GET /api/risk-overview
+
+Returns:
+
+- overall risk summary
+- risk distribution
+- a table of risk actions and priorities
+- the 10 most recent samples in reverse chronological order
+
+### GET /api/shap
+
+Returns the full global importance ranking, including:
+
+- parameter labels
+- mean absolute SHAP values
+- relative influence percentages
+- positive or negative direction
+
+This endpoint is not filter-aware because the model importance summary is global by design.
+
+### GET /api/clusters
+
+Returns the PCA scatter view and failure cluster summary:
+
+- total cluster count
+- dominant cluster
+- affected sample count
+- cluster profiles for the four failure categories
+- variance explanation placeholders for PC1 and PC2
+
+### GET /api/executive-summary
+
+Returns a business-oriented summary for management:
+
+- pass/fail totals
+- average confidence
+- pass and fail rates
+- risk summary counts
+- top risk categories
+- parameter impact summary
+- a short audit recommendation sentence
+
+### GET /api/filters/options
+
+Returns the available filter dropdown values:
+
+- periods derived from Test_Date
+- batches derived from Batch_Code
+- products derived from Product_Name
+
+### POST /api/upload
+
+Accepts a CSV file upload in multipart/form-data under the field name file.
+
+Validation rules:
+
+- only .csv files are accepted
+- the file must be readable by pandas
+- required columns must be present and case-sensitive
+- empty files are rejected
+
+On success, the backend reprocesses the dataset and returns a short quality summary.
+
+### GET /api/report/audit
+
+Returns a PDF download for technical reviewers.
+
+The report includes:
+
+- executive summary table
+- risk distribution table
+- top SHAP parameters
+- failure cluster profiles
+- missing-data handling notes
+- methodology reference
+- an audit recommendation section
+
+### GET /api/report/executive
+
+Returns a PDF download for non-technical readers.
+
+The report is written in more business-friendly language and emphasizes:
+
+- key findings
+- risk breakdown
+- recommended action
+
+## Frontend Structure
+
+The frontend lives in frontend/ and is a React single-page application built with Vite.
+
+### Routes
+
+The app routes are defined in frontend/src/App.jsx:
+
+- / - Dashboard
+- /data-input - CSV upload and dataset ingestion
+- /sample-risk - sample-level risk overview
+- /failure-pattern - PCA and failure-pattern view
+- /parameter-importance - full SHAP ranking
+- /executive-summary - management summary and report access
+
+The sidebar mirrors the same destinations and uses the same navigation model.
+
+### Page Responsibilities
+
+Each page is narrow in scope:
+
+- Dashboard combines KPIs, donut charts, SHAP highlights, and a PCA snapshot.
+- Data Input handles CSV upload and reprocessing.
+- Sample Risk Overview focuses on sample-level risk distribution and recent cases.
+- Failure Pattern shows cluster maps and failure grouping.
+- Parameter Importance expands the SHAP view into a full ranked list.
+- Executive Summary presents business-level messaging and report generation links.
+
+### Shared UI Components
+
+The component layer under frontend/src/components/ includes reusable pieces for:
+
+- sidebar navigation
+- page header and breadcrumbs
+- filter bar controls
+- stat cards
+- donut charts
+- SHAP charts
+- scatter plot charts
+- data tables
+- insight and recommendation cards
+
+### API Service Layer
+
+All backend communication is centralized in frontend/src/services/api.js.
+
+The service exposes functions for:
+
+- fetching filter options
+- loading dashboard data
+- loading risk overview data
+- loading SHAP data
+- loading cluster data
+- loading executive summary data
+- downloading PDF reports
+- uploading CSV files
+
+The service currently supports mock JSON payloads in frontend/src/mock/, but the code is configured for live backend use by default.
+
+### Styling And UI
+
+The UI is styled primarily with frontend/src/index.css.
+
+The current design system is built around:
+
+- a dark navy sidebar
+- white content surfaces
+- card-based analytics panels
+- consistent chart colors shared with the backend
+- subtle motion on page transitions
+
+## Frontend And Backend Connection
+
+Vite proxies /api requests to the Python backend at http://127.0.0.1:8000.
+
+That means a typical local development flow is:
+
+- run FastAPI on port 8000
+- run Vite on port 5173
+- let the frontend call /api/* through the proxy
+
+## Color And Category Rules
+
+Failure categories use a fixed shared palette.
+
+The canonical colors are:
+
+- Microbiological: #E74C3C
+- Physicochemical: #3498DB
+- Heavy_Metal: #9B59B6
+- Stability: #F5B041
+- Pass: #2ECC71
+
+These values are used both in the frontend and in the backend PDF/report logic. If you change them, update both sides together.
+
+## Local Setup
+
+The repository appears to be structured for local development on Windows, but the commands below are standard for any platform.
+
+### 1. Backend
+
+From the repository root:
+
+```bash
+python -m venv .venv
+.venv\\Scripts\\activate
+pip install -r requirements.txt
+uvicorn backend.main:app --reload --host 127.0.0.1 --port 8000
+```
+
+If the project does not yet have a requirements.txt file, install the backend dependencies that are imported by backend/main.py.
+
+### 2. Frontend
+
+From frontend/:
+
+```bash
+npm install
+npm run dev
+```
+
+### 3. Open The App
+
+After both services are running, open the Vite URL shown in the terminal, usually http://127.0.0.1:5173.
+
+## Environment Variables
+
+The backend optionally reads:
+
+- GOOGLE_AI_API_KEY
+
+If the key is present, the report generator can call Gemini for narrative text. If it is absent or invalid, the backend falls back to local template text and still works.
+
+## Dataset And Experiment Folders
+
+The versioned folders in the repository document the modeling history of the project.
+
+- v1_baseline_full_features contains the baseline notebook work.
+- v2_feature_selection contains feature-selection and clustering work, plus the cluster label CSV used at runtime.
+- v3_robust_pipeline contains the production-ready pipeline notebooks.
+- v4_model_audit contains model-audit work and the model bundle expected by the backend.
+- v5_recalibration_sop contains recalibration and operating-procedure work.
+
+These folders are useful for auditability. They explain how the model evolved and why the current runtime pipeline looks the way it does.
+
+## Practical Notes And Constraints
+
+- The backend is stateful in memory. Restarting the server reloads the baseline dataset and recomputes derived outputs.
+- The frontend expects the backend to be available through the Vite proxy unless mock mode is deliberately enabled.
+- CSV uploads must use exact column names. Case mismatches will produce validation errors.
+- The failure clusters are not discovered dynamically at runtime. They depend on the precomputed cluster-label CSV.
+- SHAP values are global model characteristics, not a per-filter recalculation.
+- The app is intended for batch analytics and audit review, not live process control.
+
+## Known Gaps To Be Aware Of
+
+- The repository currently mixes a few historical approaches and generated artifacts. That is intentional, but it makes the folder structure richer than a minimal production app.
+- Some report text in the backend may still use older phrasing from earlier experimentation. The architecture, however, consistently targets the current BQIS workflow.
+- If the model bundle or cluster-label CSV are absent, the backend cannot fully initialize.
+
+## Why This README Is Verbose
+
+This project is used in an audit-style context. The README is intentionally detailed so a future developer, reviewer, or AI assistant can understand:
+
+- what the system does
+- where each responsibility lives
+- which files are operationally important
+- how data must be shaped before it enters the pipeline
+- how the backend and frontend are connected
+
+That is the minimum documentation needed to modify the project safely.
 - Generates two types of **PDF audit reports**: technical (for auditors) and executive (for management)
 - Provides an interactive React dashboard with 6 pages
 
